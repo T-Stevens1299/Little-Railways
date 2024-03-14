@@ -24,6 +24,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
+	//Mesh Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Wagon", meta=(AllowPrivateAccess = "true"))
 	UStaticMeshComponent* WagonBody;
 
@@ -38,5 +39,24 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Wagon", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* RightWheel2;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Wagon", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* FillMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wagon", meta = (AllowPrivateAccess = "true"))
+	TArray<UStaticMesh*> LoadAmount;
+
+public:
+	//Numerical Variables
+	UPROPERTY(EditAnywhere)
+	int32 loadPercentage;
+
+
+public:
+	//Functions
+	UFUNCTION(BlueprintCallable, Category = "Wagon")
+	void LoadWagon();
+
+	void SetWagonLoad(int loadPercent);
 
 };

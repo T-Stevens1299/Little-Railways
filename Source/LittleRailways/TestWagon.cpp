@@ -23,13 +23,17 @@ ATestWagon::ATestWagon()
 
 	RightWheel2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentD"));
 	RightWheel2->SetupAttachment(WagonBody);
+
+	FillMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LoadComponent"));
+	FillMesh->SetupAttachment(WagonBody);
 }
 
 // Called when the game starts or when spawned
 void ATestWagon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	loadPercentage = 0;
+	SetWagonLoad(loadPercentage);
 }
 
 // Called every frame
@@ -39,3 +43,26 @@ void ATestWagon::Tick(float DeltaTime)
 
 }
 
+void ATestWagon::LoadWagon() 
+{
+	if (loadPercentage < 100) 
+	{
+		loadPercentage = loadPercentage + 25;
+		SetWagonLoad(loadPercentage);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("WagonFull"));
+	}
+}
+
+void ATestWagon::SetWagonLoad(int loadPercent)
+{
+	for (int i = 0; i < 5; i++) 
+	{
+		if ((i * 25) == loadPercent) 
+		{
+			FillMesh->SetStaticMesh(LoadAmount[i]);
+		}
+	}
+}
