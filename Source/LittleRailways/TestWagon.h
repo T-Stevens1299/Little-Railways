@@ -4,14 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/PrimitiveComponent.h"
+#include "BPI_Braking.h"
 #include "TestWagon.generated.h"
 
 UCLASS()
-class LITTLERAILWAYS_API ATestWagon : public AActor
+class LITTLERAILWAYS_API ATestWagon : public AActor, public IBPI_Braking
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ATestWagon();
 
@@ -19,13 +21,13 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 public:
 	//Mesh Components
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Wagon", meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Wagon", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* WagonBody;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Wagon", meta = (AllowPrivateAccess = "true"))
@@ -46,6 +48,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wagon", meta = (AllowPrivateAccess = "true"))
 	TArray<UStaticMesh*> LoadAmount;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Wagon", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* BrakeMesh;
+
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wagon", meta = (AllowPrivateAccess = "true"))
+	//TArray<UStaticMesh> wheelArray;
+
 public:
 	//Numerical Variables
 	UPROPERTY(EditAnywhere)
@@ -58,5 +67,10 @@ public:
 	void LoadWagon();
 
 	void SetWagonLoad(int loadPercent);
+
+	void ApplyBrakes(int passedBrakeVal);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Braking")
+	void Brake(int passedForce); void Brake_Implementation(int passedForce) override;
 
 };

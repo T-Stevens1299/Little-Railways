@@ -26,6 +26,9 @@ ATestWagon::ATestWagon()
 
 	FillMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LoadComponent"));
 	FillMesh->SetupAttachment(WagonBody);
+
+	BrakeMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("BrakeComponent"));
+	BrakeMesh->SetupAttachment(WagonBody);
 }
 
 // Called when the game starts or when spawned
@@ -65,4 +68,19 @@ void ATestWagon::SetWagonLoad(int loadPercent)
 			FillMesh->SetStaticMesh(LoadAmount[i]);
 		}
 	}
+}
+
+void ATestWagon::ApplyBrakes(int passedBrakeVal) 
+{
+	float brakeVal = passedBrakeVal;
+
+	LeftWheel1->SetAngularDamping(brakeVal);
+	LeftWheel2->SetAngularDamping(brakeVal);
+	RightWheel1->SetAngularDamping(brakeVal);
+	RightWheel2->SetAngularDamping(brakeVal);
+}
+
+void ATestWagon::Brake_Implementation(int passedForce) 
+{
+	ApplyBrakes(passedForce);
 }
