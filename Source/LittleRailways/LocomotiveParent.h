@@ -45,15 +45,22 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Loco", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* BrakeMesh;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Loco", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* RegulatorMesh;
+
 	bool throttleOn = false;
+	int passedTorqueMulti;
 
 public:
 	//Functions
 	UFUNCTION(BlueprintCallable, Category = "Loco")
-	void ApplyTorque();
+	void ApplyTorque(int passedTorqueMultiplier);
 
 	void ApplyBrakes(int passedBrakeVal);
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Braking")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControls")
 	void Brake(int passedForce); void Brake_Implementation(int passedForce) override;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControls")
+	void Regulator(int passedTorque); void Regulator_Implementation(int passedTorque) override;
 };

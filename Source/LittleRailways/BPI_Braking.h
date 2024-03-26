@@ -22,6 +22,9 @@ class LITTLERAILWAYS_API IBPI_Braking
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Braking")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControls")
 	void Brake(int passedForce);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControls")
+	void Regulator(int passedTorque);
 };

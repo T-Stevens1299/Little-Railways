@@ -26,38 +26,48 @@ ALocomotiveParent::ALocomotiveParent()
 
 	BrakeMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("BrakeComponent"));
 	BrakeMesh->SetupAttachment(LocoBody);
+
+	RegulatorMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("RegComponent"));
+	RegulatorMesh->SetupAttachment(LocoBody);
 }
 
 // Called when the game starts or when spawned
 void ALocomotiveParent::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	passedTorqueMulti = 0;
 }
 
 // Called every frame
 void ALocomotiveParent::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (throttleOn == true)
-	{
-		LeftWheel1->AddTorqueInDegrees(FVector(0.0f, 50000000.0f, 0.0f));
-		LeftWheel2->AddTorqueInDegrees(FVector(0.0f, 50000000.0f, 0.0f));
-		RightWheel1->AddTorqueInDegrees(FVector(0.0f, 50000000.0f, 0.0f));
-		RightWheel2->AddTorqueInDegrees(FVector(0.0f, 50000000.0f, 0.0f));
-	}
-}
-
-void ALocomotiveParent::ApplyTorque() 
-{
 	if (throttleOn == true) 
 	{
-		throttleOn = false;
+		LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
+		LeftWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
+		RightWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
+		RightWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
 	}
-	else
+
+	float speed = ((GetVelocity().Size2D() * 3600) / 100000);
+	FString speedOutput = FString::SanitizeFloat(speed);
+	
+	if (GEngine) 
 	{
-		throttleOn = true;
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *speedOutput);
 	}
+
+
+}
+
+void ALocomotiveParent::ApplyTorque(int passedTorqueMultiplier)
+{
+		passedTorqueMulti = passedTorqueMultiplier;
+		if (passedTorqueMulti != 0) 
+		{
+			throttleOn = true;
+		}
 }
 
 void ALocomotiveParent::ApplyBrakes(int passedBrakeVal)
@@ -73,4 +83,10 @@ void ALocomotiveParent::ApplyBrakes(int passedBrakeVal)
 void ALocomotiveParent::Brake_Implementation(int passedForce)
 {
 	ApplyBrakes(passedForce);
+}
+
+void ALocomotiveParent::Regulator_Implementation(int passedTorque)
+{
+	throttleOn = false;
+	ApplyTorque(passedTorque);
 }
