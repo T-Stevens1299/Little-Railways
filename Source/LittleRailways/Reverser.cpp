@@ -1,12 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BrakeLever.h"
+#include "Reverser.h"
 #include "BPI_Braking.h"
+
 // Sets default values
-ABrakeLever::ABrakeLever()
+AReverser::AReverser()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	InteractableMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("InteractableComponent"));
@@ -19,50 +20,50 @@ ABrakeLever::ABrakeLever()
 }
 
 // Called when the game starts or when spawned
-void ABrakeLever::BeginPlay()
+void AReverser::BeginPlay()
 {
 	Super::BeginPlay();
-	curDetents = 4;
+	curDetents = 1;
 }
 
 // Called every frame
-void ABrakeLever::Tick(float DeltaTime)
+void AReverser::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-void ABrakeLever::setBrakeStage() 
+void AReverser::moveReverser() 
 {
-	if (curDetents == 4) 
+	if (curDetents == 2) 
 	{
 		curDetents = 0;
 	}
-	else
+	else 
 	{
 		curDetents++;
 	}
 
-	engageBrakeStage(curDetents);
+	setReverser(curDetents);
 }
 
-void ABrakeLever::engageBrakeStage(int currentDetent)
+void AReverser::setReverser(int currentDetent) 
 {
-	for (int i = 0; i < 5; i++) 
+	for (int i = 0; i < 3; i++)
 	{
-		if (i == currentDetent) 
+		if (i == currentDetent)
 		{
 			FRotator newRot;
 			newRot.Yaw = 0.0f;
 			newRot.Pitch = angleSettings[i];
 			newRot.Roll = 0.0f;
-		
+
 			InteractableMeshComponent->SetWorldRotation(newRot);
 
 			IBPI_Braking* BrakingInterface = Cast<IBPI_Braking>(GetParentActor());
-			if (BrakingInterface) 
+			if (BrakingInterface)
 			{
-				BrakingInterface->Execute_Brake(GetParentActor(), currentDetent*25);
+				BrakingInterface->Execute_SetReverser(GetParentActor(), curDetents);
 			}
 		}
 	}

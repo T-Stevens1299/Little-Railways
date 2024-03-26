@@ -48,7 +48,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Loco", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* RegulatorMesh;
 
-	bool throttleOn = false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Loco", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* ReverserMesh;
+
+	bool canMove;
+	bool throttleOn;
+	bool isReversing;
 	int passedTorqueMulti;
 
 public:
@@ -63,4 +68,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControls")
 	void Regulator(int passedTorque); void Regulator_Implementation(int passedTorque) override;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControls")
+	void SetReverser(int passedDetent); void SetReverser_Implementation(int passedDetent) override;
 };

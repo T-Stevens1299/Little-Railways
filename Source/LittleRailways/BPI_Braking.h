@@ -27,4 +27,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControls")
 	void Regulator(int passedTorque);
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControls")
+	void SetReverser(int passedDetent);
 };

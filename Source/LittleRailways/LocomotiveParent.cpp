@@ -29,6 +29,9 @@ ALocomotiveParent::ALocomotiveParent()
 
 	RegulatorMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("RegComponent"));
 	RegulatorMesh->SetupAttachment(LocoBody);
+
+	ReverserMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("ReverserComponent"));
+	ReverserMesh->SetupAttachment(LocoBody);
 }
 
 // Called when the game starts or when spawned
@@ -42,12 +45,25 @@ void ALocomotiveParent::BeginPlay()
 void ALocomotiveParent::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (throttleOn == true) 
+	if (canMove == true)
 	{
-		LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
-		LeftWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
-		RightWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
-		RightWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
+		if (throttleOn == true)
+		{
+			if (isReversing == false)
+			{
+				LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
+				LeftWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
+				RightWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
+				RightWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
+			}
+			else
+			{
+				LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -5000.0f), 0.0f));
+				LeftWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -5000.0f), 0.0f));
+				RightWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -5000.0f), 0.0f));
+				RightWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -5000.0f), 0.0f));
+			}
+		}
 	}
 
 	float speed = ((GetVelocity().Size2D() * 3600) / 100000);
@@ -89,4 +105,22 @@ void ALocomotiveParent::Regulator_Implementation(int passedTorque)
 {
 	throttleOn = false;
 	ApplyTorque(passedTorque);
+}
+
+void ALocomotiveParent::SetReverser_Implementation(int passedDetent)
+{
+	if (passedDetent == 0)
+	{
+		isReversing = true;
+		canMove = true;
+	}
+	else if (passedDetent == 2) 
+	{
+		isReversing = false;
+		canMove = true;
+	}
+	else if (passedDetent == 1) 
+	{
+		canMove = false;
+	}
 }
