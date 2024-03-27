@@ -6,6 +6,9 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "LittleRailways/Reverser.h"
+#include "LittleRailways/Regulator.h"
+#include "LittleRailways/BrakeLever.h"
 #include <Kismet/GameplayStatics.h>
 
 // Sets default values
@@ -56,6 +59,26 @@ ALocoController::ALocoController()
 void ALocoController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = true;
+
+	ReverserComponent = Cast<AReverser>(ReverserMesh->GetChildActor());
+	if (ReverserComponent) 
+	{
+		ReverserComponent->SetTrainPtr(this);
+	}
+
+	RegulatorComponent = Cast<ARegulator>(RegulatorMesh->GetChildActor());
+	if (RegulatorComponent) 
+	{
+		RegulatorComponent->SetTrainPtr(this);
+	}
+
+	BrakeLeverComponent = Cast<ABrakeLever>(BrakeMesh->GetChildActor());
+	if (BrakeLeverComponent)
+	{
+		BrakeLeverComponent->SetTrainPtr(this);
+	}
 
 	if (IsLocallyControlled() && HUDref)
 	{
@@ -133,6 +156,8 @@ void ALocoController::CameraDrag(const FInputActionValue& Value)
 void ALocoController::ExitTrain(const FInputActionValue& Value) 
 {
 	UE_LOG(LogTemp, Warning, TEXT("ExitTrain"));
+	BrakeLeverComponent->setBrakeStage();
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = false;
 }
 
 void ALocoController::ApplyTorque(int passedTorqueMultiplier)

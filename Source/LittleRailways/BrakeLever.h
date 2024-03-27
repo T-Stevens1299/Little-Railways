@@ -45,4 +45,8 @@ public:
 	void setBrakeStage();
 
 	void engageBrakeStage(int currentDetent);
+
+	class ALocoController* TrainRef;
+
+	void SetTrainPtr(ALocoController* TrainPrt);
 };

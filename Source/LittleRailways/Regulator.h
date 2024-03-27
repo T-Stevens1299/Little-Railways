@@ -42,4 +42,8 @@ public:
 	void moveRegulator();
 
 	void engageRegulator(int currentDetent);
+
+	class ALocoController* TrainRef;
+
+	void SetTrainPtr(ALocoController* TrainPrt);
 };

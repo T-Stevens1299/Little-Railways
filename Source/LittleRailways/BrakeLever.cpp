@@ -3,6 +3,8 @@
 
 #include "BrakeLever.h"
 #include "BPI_Braking.h"
+#include "LocoController.h"
+
 // Sets default values
 ABrakeLever::ABrakeLever()
 {
@@ -66,4 +68,9 @@ void ABrakeLever::engageBrakeStage(int currentDetent)
 			}
 		}
 	}
+}
+
+void ABrakeLever::SetTrainPtr(ALocoController* TrainPrt)
+{
+	TrainRef = TrainPrt;
 }

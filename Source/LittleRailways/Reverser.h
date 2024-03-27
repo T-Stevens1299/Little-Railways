@@ -42,4 +42,8 @@ public:
 	void moveReverser();
 
 	void setReverser(int currentDetent);
+
+	class ALocoController* TrainRef;
+
+	void SetTrainPtr(ALocoController* TrainPrt);
 };

@@ -3,6 +3,8 @@
 
 #include "Regulator.h"
 #include "BPI_Braking.h"
+#include "LocoController.h"
+
 // Sets default values
 ARegulator::ARegulator()
 {
@@ -66,4 +68,9 @@ void ARegulator::engageRegulator(int currentDetent)
 			}
 		}
 	}
+}
+
+void ARegulator::SetTrainPtr(ALocoController* TrainPrt)
+{
+	TrainRef = TrainPrt;
 }

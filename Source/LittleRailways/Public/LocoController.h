@@ -15,6 +15,10 @@ class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
 
+class AReverser;
+class ARegulator;
+class ABrakeLever;
+
 UCLASS()
 class LITTLERAILWAYS_API ALocoController : public APawn, public IBPI_Braking
 {
@@ -114,4 +118,14 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Widget")
 	class UTrainControlsHUD* HUD;
+
+	/** Lever Components */
+	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
+	AReverser* ReverserComponent;
+
+	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
+	ARegulator* RegulatorComponent;
+
+	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
+	ABrakeLever* BrakeLeverComponent;
 };

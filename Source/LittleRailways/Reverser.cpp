@@ -3,6 +3,7 @@
 
 #include "Reverser.h"
 #include "BPI_Braking.h"
+#include "LocoController.h"
 
 // Sets default values
 AReverser::AReverser()
@@ -67,4 +68,9 @@ void AReverser::setReverser(int currentDetent)
 			}
 		}
 	}
+}
+
+void AReverser::SetTrainPtr(ALocoController *TrainPrt) 
+{
+	TrainRef = TrainPrt;
 }

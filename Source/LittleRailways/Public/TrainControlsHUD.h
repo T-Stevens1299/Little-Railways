@@ -22,4 +22,14 @@ protected:
 
 public:
 	void SpeedCalculator(float speedPassed);
+
+protected:
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class USlider* RegulatorSlider;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class USlider* ReverserSlider;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class USlider* BreakSlider;
 };
