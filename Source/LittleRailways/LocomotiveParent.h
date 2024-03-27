@@ -63,12 +63,12 @@ public:
 
 	void ApplyBrakes(int passedBrakeVal);
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControls")
-	void Brake(int passedForce); void Brake_Implementation(int passedForce) override;
+	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControls")
+	//void Brake(int passedForce); void Brake_Implementation(int passedForce) override;
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControls")
-	void Regulator(int passedTorque); void Regulator_Implementation(int passedTorque) override;
+	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControls")
+	//void Regulator(int passedTorque); void Regulator_Implementation(int passedTorque) override;
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControls")
-	void SetReverser(int passedDetent); void SetReverser_Implementation(int passedDetent) override;
+	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControls")
+	//void SetReverser(int passedDetent); void SetReverser_Implementation(int passedDetent) override;
 };

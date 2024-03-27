@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "LocomotiveParent.h"
+#include "LocoController.h"
 
 // Sets default values
-ALocomotiveParent::ALocomotiveParent()
+ALocoController::ALocoController()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+ 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	LocoBody = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootComponent"));
@@ -32,19 +32,32 @@ ALocomotiveParent::ALocomotiveParent()
 
 	ReverserMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("ReverserComponent"));
 	ReverserMesh->SetupAttachment(LocoBody);
+
+	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
+	CameraArm->SetupAttachment(LocoBody);
+	CameraArm->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	CameraArm->SetRelativeRotation(FRotator(0.0f, -20.0f, 0.0f));
+	CameraArm->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 50.0f), FRotator(0.0f, 0.0f, 0.0f));
+	CameraArm->TargetArmLength = 400.0f;
+	CameraArm->bEnableCameraLag = true;
+	CameraArm->CameraLagSpeed = 3.0f;
+
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
 }
 
 // Called when the game starts or when spawned
-void ALocomotiveParent::BeginPlay()
+void ALocoController::BeginPlay()
 {
 	Super::BeginPlay();
-	passedTorqueMulti = 0;
+	
 }
 
 // Called every frame
-void ALocomotiveParent::Tick(float DeltaTime)
+void ALocoController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 	if (canMove == true)
 	{
 		if (throttleOn == true)
@@ -68,25 +81,31 @@ void ALocomotiveParent::Tick(float DeltaTime)
 
 	float speed = ((GetVelocity().Size2D() * 3600) / 100000);
 	FString speedOutput = FString::SanitizeFloat(speed);
-	
-	if (GEngine) 
+
+	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *speedOutput);
 	}
 
-
 }
 
-void ALocomotiveParent::ApplyTorque(int passedTorqueMultiplier)
+// Called to bind functionality to input
+void ALocoController::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-		passedTorqueMulti = passedTorqueMultiplier;
-		if (passedTorqueMulti != 0) 
-		{
-			throttleOn = true;
-		}
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
 }
 
-void ALocomotiveParent::ApplyBrakes(int passedBrakeVal)
+void ALocoController::ApplyTorque(int passedTorqueMultiplier)
+{
+	passedTorqueMulti = passedTorqueMultiplier;
+	if (passedTorqueMulti != 0)
+	{
+		throttleOn = true;
+	}
+}
+
+void ALocoController::ApplyBrakes(int passedBrakeVal)
 {
 	float brakeVal = passedBrakeVal;
 
@@ -96,31 +115,31 @@ void ALocomotiveParent::ApplyBrakes(int passedBrakeVal)
 	RightWheel2->SetAngularDamping(brakeVal);
 }
 
-//void ALocomotiveParent::Brake_Implementation(int passedForce)
-//{
-//	ApplyBrakes(passedForce);
-//}
-//
-//void ALocomotiveParent::Regulator_Implementation(int passedTorque)
-//{
-//	throttleOn = false;
-//	ApplyTorque(passedTorque);
-//}
-//
-//void ALocomotiveParent::SetReverser_Implementation(int passedDetent)
-//{
-//	if (passedDetent == 0)
-//	{
-//		isReversing = true;
-//		canMove = true;
-//	}
-//	else if (passedDetent == 2) 
-//	{
-//		isReversing = false;
-//		canMove = true;
-//	}
-//	else if (passedDetent == 1) 
-//	{
-//		canMove = false;
-//	}
-//}
+void ALocoController::Brake_Implementation(int passedForce)
+{
+	ApplyBrakes(passedForce);
+}
+
+void ALocoController::Regulator_Implementation(int passedTorque)
+{
+	throttleOn = false;
+	ApplyTorque(passedTorque);
+}
+
+void ALocoController::SetReverser_Implementation(int passedDetent)
+{
+		if (passedDetent == 0)
+		{
+			isReversing = true;
+			canMove = true;
+		}
+		else if (passedDetent == 2) 
+		{
+			isReversing = false;
+			canMove = true;
+		}
+		else if (passedDetent == 1) 
+		{
+			canMove = false;
+		}
+}
