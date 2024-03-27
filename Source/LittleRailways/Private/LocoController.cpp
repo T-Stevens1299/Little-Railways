@@ -2,6 +2,11 @@
 
 
 #include "LocoController.h"
+#include "TrainControlsHUD.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "InputActionValue.h"
+#include <Kismet/GameplayStatics.h>
 
 // Sets default values
 ALocoController::ALocoController()
@@ -44,13 +49,28 @@ ALocoController::ALocoController()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
+	Camera->bUsePawnControlRotation = true;
 }
 
 // Called when the game starts or when spawned
 void ALocoController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (IsLocallyControlled() && HUDref)
+	{
+		HUD = CreateWidget<UTrainControlsHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0), HUDref);
+		HUD->AddToViewport();
+	}
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(TrainControlsMappingContext, 0);
+		}
+	}
+
 }
 
 // Called every frame
@@ -79,21 +99,40 @@ void ALocoController::Tick(float DeltaTime)
 		}
 	}
 
-	float speed = ((GetVelocity().Size2D() * 3600) / 100000);
-	FString speedOutput = FString::SanitizeFloat(speed);
-
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *speedOutput);
-	}
-
+	speed = ((GetVelocity().Size2D() * 3600) / 100000);
+	
+	HUD->SpeedCalculator(speed);
 }
 
 // Called to bind functionality to input
 void ALocoController::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	//Super::SetupPlayerInputComponent(PlayerInputComponent);
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponent->BindAction(CameraDragAction, ETriggerEvent::Triggered, this, &ALocoController::CameraDrag);
 
+		EnhancedInputComponent->BindAction(ExitAction, ETriggerEvent::Triggered, this, &ALocoController::ExitTrain);
+	}
+}
+
+//InputFunctions
+
+void ALocoController::CameraDrag(const FInputActionValue& Value)
+{
+	const FVector2D LookAxisValue = Value.Get<FVector2D>();
+	if (GetController()) 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Movement"));
+		AddControllerYawInput(LookAxisValue.X);
+		AddControllerPitchInput(LookAxisValue.Y);
+	}
+
+}
+
+void ALocoController::ExitTrain(const FInputActionValue& Value) 
+{
+	UE_LOG(LogTemp, Warning, TEXT("ExitTrain"));
 }
 
 void ALocoController::ApplyTorque(int passedTorqueMultiplier)

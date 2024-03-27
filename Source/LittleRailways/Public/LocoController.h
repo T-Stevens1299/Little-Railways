@@ -8,7 +8,12 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "LittleRailways/BPI_Braking.h"
+#include "Blueprint/UserWidget.h"
 #include "LocoController.generated.h"
+
+class UInputAction;
+class UInputMappingContext;
+struct FInputActionValue;
 
 UCLASS()
 class LITTLERAILWAYS_API ALocoController : public APawn, public IBPI_Braking
@@ -29,6 +34,10 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void CameraDrag(const FInputActionValue& Value);
+
+	void ExitTrain(const FInputActionValue& Value);
 
 public:
 	UPROPERTY(EditAnywhere)
@@ -68,6 +77,7 @@ public:
 	bool throttleOn;
 	bool isReversing;
 	int passedTorqueMulti;
+	float speed;
 
 public:
 	//Functions
@@ -84,4 +94,24 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControlsRef")
 	void SetReverser(int passedDetent); void SetReverser_Implementation(int passedDetent) override;
+
+protected:
+	/** MappingContext */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input")
+	UInputMappingContext* TrainControlsMappingContext;
+	
+	/** Look Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input")
+	class UInputAction* CameraDragAction;
+
+	/** Exit Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input")
+	class UInputAction* ExitAction;
+
+	/** HUD Widget */
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+	TSubclassOf<UUserWidget> HUDref;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Widget")
+	class UTrainControlsHUD* HUD;
 };
