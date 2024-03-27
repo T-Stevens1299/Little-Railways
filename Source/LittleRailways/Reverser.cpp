@@ -64,7 +64,7 @@ void AReverser::setReverser(int currentDetent)
 			IBPI_Braking* BrakingInterface = Cast<IBPI_Braking>(GetParentActor());
 			if (BrakingInterface)
 			{
-				BrakingInterface->Execute_SetReverser(GetParentActor(), curDetents);
+				BrakingInterface->Execute_SetReverser(GetParentActor(), currentDetent);
 			}
 		}
 	}

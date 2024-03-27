@@ -70,7 +70,7 @@ void ABrakeLever::engageBrakeStage(int currentDetent)
 	}
 }
 
-void ABrakeLever::SetTrainPtr(ALocoController* TrainPrt)
+void ABrakeLever::SetTrainPtr(ALocoController *TrainPrt)
 {
 	TrainRef = TrainPrt;
 }

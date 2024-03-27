@@ -75,6 +75,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* ReverserMesh;
 
+	/** Lever Components */
+	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
+	AReverser* ReverserComponent;
+
+	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
+	ARegulator* RegulatorComponent;
+
+	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
+	ABrakeLever* BrakeLeverComponent;
+
 	//Variables
 
 	bool canMove;
@@ -99,6 +109,14 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControlsRef")
 	void SetReverser(int passedDetent); void SetReverser_Implementation(int passedDetent) override;
 
+	void SetComponents();
+
+	void setRegStage(int passedDetent);
+
+	void setBrakeStage(int passedDetent);
+
+	void setReverserStage(int passedDetent);
+
 protected:
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input")
@@ -118,14 +136,4 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Widget")
 	class UTrainControlsHUD* HUD;
-
-	/** Lever Components */
-	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
-	AReverser* ReverserComponent;
-
-	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
-	ARegulator* RegulatorComponent;
-
-	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
-	ABrakeLever* BrakeLeverComponent;
 };

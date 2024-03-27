@@ -23,6 +23,19 @@ protected:
 public:
 	void SpeedCalculator(float speedPassed);
 
+	class ALocoController* TrainRef;
+
+	void SetTrainPtr(ALocoController* TrainPrt);
+
+	UFUNCTION(BlueprintCallable, Category = "Slider")
+	void MoveRegSlider(float passedValue);
+
+	UFUNCTION(BlueprintCallable, Category = "Slider")
+	void MoveRevSlider(float passedValue);
+
+	UFUNCTION(BlueprintCallable, Category = "Slider")
+	void MoveBrakeSlider(float passedValue);
+
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class USlider* RegulatorSlider;

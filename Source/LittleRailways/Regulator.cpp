@@ -70,7 +70,7 @@ void ARegulator::engageRegulator(int currentDetent)
 	}
 }
 
-void ARegulator::SetTrainPtr(ALocoController* TrainPrt)
+void ARegulator::SetTrainPtr(ALocoController *TrainPrt)
 {
 	TrainRef = TrainPrt;
 }

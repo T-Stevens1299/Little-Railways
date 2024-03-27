@@ -62,27 +62,12 @@ void ALocoController::BeginPlay()
 
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = true;
 
-	ReverserComponent = Cast<AReverser>(ReverserMesh->GetChildActor());
-	if (ReverserComponent) 
-	{
-		ReverserComponent->SetTrainPtr(this);
-	}
-
-	RegulatorComponent = Cast<ARegulator>(RegulatorMesh->GetChildActor());
-	if (RegulatorComponent) 
-	{
-		RegulatorComponent->SetTrainPtr(this);
-	}
-
-	BrakeLeverComponent = Cast<ABrakeLever>(BrakeMesh->GetChildActor());
-	if (BrakeLeverComponent)
-	{
-		BrakeLeverComponent->SetTrainPtr(this);
-	}
+	SetComponents();
 
 	if (IsLocallyControlled() && HUDref)
 	{
 		HUD = CreateWidget<UTrainControlsHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0), HUDref);
+		HUD->SetTrainPtr(this);
 		HUD->AddToViewport();
 	}
 
@@ -96,16 +81,37 @@ void ALocoController::BeginPlay()
 
 }
 
+void ALocoController::SetComponents()
+{
+	ReverserComponent = Cast<AReverser>(ReverserMesh->GetChildActor());
+	if (ReverserComponent)
+	{
+		ReverserComponent->SetTrainPtr(this);
+	}
+
+	RegulatorComponent = Cast<ARegulator>(RegulatorMesh->GetChildActor());
+	if (RegulatorComponent)
+	{
+		RegulatorComponent->SetTrainPtr(this);
+	}
+
+	BrakeLeverComponent = Cast<ABrakeLever>(BrakeMesh->GetChildActor());
+	if (BrakeLeverComponent)
+	{
+		BrakeLeverComponent->SetTrainPtr(this);
+	}
+}
+
 // Called every frame
 void ALocoController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (canMove == true)
+	if (canMove)
 	{
-		if (throttleOn == true)
+		if (throttleOn)
 		{
-			if (isReversing == false)
+			if (!isReversing)
 			{
 				LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
 				LeftWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
@@ -146,7 +152,6 @@ void ALocoController::CameraDrag(const FInputActionValue& Value)
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
 	if (GetController()) 
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Movement"));
 		AddControllerYawInput(LookAxisValue.X);
 		AddControllerPitchInput(LookAxisValue.Y);
 	}
@@ -156,7 +161,6 @@ void ALocoController::CameraDrag(const FInputActionValue& Value)
 void ALocoController::ExitTrain(const FInputActionValue& Value) 
 {
 	UE_LOG(LogTemp, Warning, TEXT("ExitTrain"));
-	BrakeLeverComponent->setBrakeStage();
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = false;
 }
 
@@ -166,6 +170,7 @@ void ALocoController::ApplyTorque(int passedTorqueMultiplier)
 	if (passedTorqueMulti != 0)
 	{
 		throttleOn = true;
+
 	}
 }
 
@@ -194,16 +199,32 @@ void ALocoController::SetReverser_Implementation(int passedDetent)
 {
 		if (passedDetent == 0)
 		{
-			isReversing = true;
 			canMove = true;
+			isReversing = true;
 		}
 		else if (passedDetent == 2) 
 		{
-			isReversing = false;
 			canMove = true;
+			isReversing = false;
 		}
 		else if (passedDetent == 1) 
 		{
 			canMove = false;
 		}
+}
+
+//Lever Movement
+void ALocoController::setRegStage(int passedDetent)
+{
+	RegulatorComponent->engageRegulator(passedDetent);
+}
+
+void ALocoController::setReverserStage(int passedDetent)
+{
+	ReverserComponent->setReverser(passedDetent);
+}
+
+void ALocoController::setBrakeStage(int passedDetent)
+{
+	BrakeLeverComponent->engageBrakeStage(passedDetent);
 }
