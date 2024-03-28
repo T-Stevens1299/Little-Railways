@@ -1,4 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Stevens Studios, all rights reserved
+// Written by Thomas Stevens
 
 
 #include "Regulator.h"

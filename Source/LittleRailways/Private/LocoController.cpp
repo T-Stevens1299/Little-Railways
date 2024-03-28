@@ -1,4 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Stevens Studios, all rights reserved
+// Written by Thomas Stevens
 
 
 #include "LocoController.h"
@@ -189,7 +190,7 @@ void ALocoController::DragTrigger(const FInputActionValue& Value)
 void ALocoController::ExitTrain(const FInputActionValue& Value) 
 {
 	UE_LOG(LogTemp, Warning, TEXT("ExitTrain"));
-	//PC->bShowMouseCursor = false;
+	PC->bShowMouseCursor = false;
 }
 
 void ALocoController::ZoomCamera(const FInputActionValue& Value) 
