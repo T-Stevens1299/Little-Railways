@@ -43,6 +43,10 @@ public:
 
 	void ExitTrain(const FInputActionValue& Value);
 
+	void ZoomCamera(const FInputActionValue& Value);
+
+	void DragTrigger(const FInputActionValue& Value);
+
 public:
 	UPROPERTY(EditAnywhere)
 	USpringArmComponent* CameraArm;
@@ -90,8 +94,12 @@ public:
 	bool canMove;
 	bool throttleOn;
 	bool isReversing;
+	bool isPressed = false;
+
+
 	int passedTorqueMulti;
 	float speed;
+	FVector2D PreviousMouseLocation;
 
 public:
 	//Functions
@@ -111,11 +119,18 @@ public:
 
 	void SetComponents();
 
+	void MoveCam();
+
 	void setRegStage(int passedDetent);
 
 	void setBrakeStage(int passedDetent);
 
 	void setReverserStage(int passedDetent);
+
+	/** Returns CameraBoom subobject **/
+	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraArm; }
+	/** Returns FollowCamera subobject **/
+	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return Camera; }
 
 protected:
 	/** MappingContext */
@@ -124,11 +139,17 @@ protected:
 	
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input")
-	class UInputAction* CameraDragAction;
+	UInputAction* CameraDragAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input")
+	UInputAction* DragTriggerAction;
 
 	/** Exit Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input")
-	class UInputAction* ExitAction;
+	UInputAction* ExitAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input")
+	UInputAction* CameraZoom;
 
 	/** HUD Widget */
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
@@ -136,4 +157,20 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Widget")
 	class UTrainControlsHUD* HUD;
+
+	/** Camera Zoom Properties */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	float MinZoomLength = 100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	float MaxZoomLength = 1000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	float DefaultArmLength = 500.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	float ZoomStep = 10.0f;
+
+	APlayerController* PC;
+
 };

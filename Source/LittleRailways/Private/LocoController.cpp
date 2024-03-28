@@ -9,13 +9,19 @@
 #include "LittleRailways/Reverser.h"
 #include "LittleRailways/Regulator.h"
 #include "LittleRailways/BrakeLever.h"
+#include "GameFramework/Controller.h"
 #include <Kismet/GameplayStatics.h>
+#include "GameFramework/PlayerController.h"
 
 // Sets default values
 ALocoController::ALocoController()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
 
 	LocoBody = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootComponent"));
 	LocoBody->SetupAttachment(GetRootComponent());
@@ -42,17 +48,13 @@ ALocoController::ALocoController()
 	ReverserMesh->SetupAttachment(LocoBody);
 
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
-	CameraArm->SetupAttachment(LocoBody);
-	CameraArm->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-	CameraArm->SetRelativeRotation(FRotator(0.0f, -20.0f, 0.0f));
-	CameraArm->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 50.0f), FRotator(0.0f, 0.0f, 0.0f));
-	CameraArm->TargetArmLength = 400.0f;
-	CameraArm->bEnableCameraLag = true;
-	CameraArm->CameraLagSpeed = 3.0f;
+	CameraArm->SetupAttachment(RootComponent);
+	CameraArm->TargetArmLength = 400.0f;	
+	CameraArm->bUsePawnControlRotation = true;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
-	Camera->bUsePawnControlRotation = true;
+	Camera->bUsePawnControlRotation = false;
 }
 
 // Called when the game starts or when spawned
@@ -60,9 +62,11 @@ void ALocoController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = true;
+	PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
 	SetComponents();
+
+	PC->bShowMouseCursor = true;
 
 	if (IsLocallyControlled() && HUDref)
 	{
@@ -142,28 +146,62 @@ void ALocoController::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		EnhancedInputComponent->BindAction(CameraDragAction, ETriggerEvent::Triggered, this, &ALocoController::CameraDrag);
 
 		EnhancedInputComponent->BindAction(ExitAction, ETriggerEvent::Triggered, this, &ALocoController::ExitTrain);
+
+		EnhancedInputComponent->BindAction(CameraZoom, ETriggerEvent::Triggered, this, &ALocoController::ZoomCamera);
+
+		EnhancedInputComponent->BindAction(DragTriggerAction, ETriggerEvent::Triggered, this, &ALocoController::DragTrigger);
 	}
 }
 
-//InputFunctions
+//Input Functions
+
 
 void ALocoController::CameraDrag(const FInputActionValue& Value)
 {
-	const FVector2D LookAxisValue = Value.Get<FVector2D>();
-	if (GetController()) 
+	if (isPressed == true)
 	{
-		AddControllerYawInput(LookAxisValue.X);
-		AddControllerPitchInput(LookAxisValue.Y);
-	}
+		FVector2D LookAxisVector = Value.Get<FVector2D>();
 
+		if (Controller != nullptr)
+		{
+			// add yaw and pitch input to controller
+			AddControllerYawInput(LookAxisVector.X);
+			AddControllerPitchInput(LookAxisVector.Y);
+		}
+	}
+}
+
+void ALocoController::DragTrigger(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Triggered"));
+	if (isPressed)
+	{
+		isPressed = false;
+		PC->bShowMouseCursor = true;
+	}
+	else
+	{
+		isPressed = true;
+		PC->bShowMouseCursor = false;
+	}
 }
 
 void ALocoController::ExitTrain(const FInputActionValue& Value) 
 {
 	UE_LOG(LogTemp, Warning, TEXT("ExitTrain"));
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = false;
+	//PC->bShowMouseCursor = false;
 }
 
+void ALocoController::ZoomCamera(const FInputActionValue& Value) 
+{
+	const float newTargetArmLength = CameraArm->TargetArmLength + (Value.Get<float>() * ZoomStep);
+
+	CameraArm->TargetArmLength = FMath::Clamp(newTargetArmLength, MinZoomLength, MaxZoomLength);
+}
+//End Of Input Functions
+
+
+//Force application functions
 void ALocoController::ApplyTorque(int passedTorqueMultiplier)
 {
 	passedTorqueMulti = passedTorqueMultiplier;
@@ -184,6 +222,8 @@ void ALocoController::ApplyBrakes(int passedBrakeVal)
 	RightWheel2->SetAngularDamping(brakeVal);
 }
 
+
+//Interface functions
 void ALocoController::Brake_Implementation(int passedForce)
 {
 	ApplyBrakes(passedForce);
