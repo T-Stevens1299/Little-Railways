@@ -118,17 +118,17 @@ void ALocoController::Tick(float DeltaTime)
 		{
 			if (!isReversing)
 			{
-				LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
-				LeftWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
-				RightWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
-				RightWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
+				LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 7500.0f), 0.0f));
+				LeftWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 7500.0f), 0.0f));
+				RightWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 7500.0f), 0.0f));
+				RightWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 7500.0f), 0.0f));
 			}
 			else
 			{
-				LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -5000.0f), 0.0f));
-				LeftWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -5000.0f), 0.0f));
-				RightWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -5000.0f), 0.0f));
-				RightWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -5000.0f), 0.0f));
+				LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -7500.0f), 0.0f));
+				LeftWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -7500.0f), 0.0f));
+				RightWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -7500.0f), 0.0f));
+				RightWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -7500.0f), 0.0f));
 			}
 		}
 	}
