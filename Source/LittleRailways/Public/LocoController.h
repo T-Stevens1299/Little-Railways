@@ -91,15 +91,18 @@ public:
 	ABrakeLever* BrakeLeverComponent;
 
 	//Variables
-
 	bool canMove;
 	bool throttleOn;
 	bool isReversing;
 	bool isPressed = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	float TractiveTorque;
 
 	int passedTorqueMulti;
+
 	float speed;
+
 	FVector2D PreviousMouseLocation;
 
 public:
