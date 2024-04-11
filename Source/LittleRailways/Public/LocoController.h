@@ -99,6 +99,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	float TractiveTorque;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	float MaxSpeedKph;
+
 	int passedTorqueMulti;
 
 	float speed;
@@ -109,6 +112,9 @@ public:
 	//Functions
 	UFUNCTION(BlueprintCallable, Category = "Loco")
 	void ApplyTorque(int passedTorqueMultiplier);
+
+	UFUNCTION(BlueprintCallable, Category = "Loco")
+	void Possessed();
 
 	void ApplyBrakes(int passedBrakeVal);
 

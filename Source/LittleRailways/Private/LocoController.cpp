@@ -33,6 +33,7 @@ ALocoController::ALocoController()
 	LeftWheel2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentB"));
 	LeftWheel2->SetupAttachment(LocoBody);
 
+
 	RightWheel1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentC"));
 	RightWheel1->SetupAttachment(LocoBody);
 
@@ -67,22 +68,15 @@ void ALocoController::BeginPlay()
 
 	SetComponents();
 
-	PC->bShowMouseCursor = true;
 
-	if (IsLocallyControlled() && HUDref)
-	{
-		HUD = CreateWidget<UTrainControlsHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0), HUDref);
-		HUD->SetTrainPtr(this);
-		HUD->AddToViewport();
-	}
+	HUD = CreateWidget<UTrainControlsHUD>(PC, HUDref);
+	HUD->SetTrainPtr(this);
 
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(TrainControlsMappingContext, 0);
-		}
-	}
+	//Setting Locos Max Speed
+	LeftWheel1->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
+	LeftWheel2->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
+	RightWheel1->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
+	RightWheel2->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
 
 }
 
@@ -104,6 +98,23 @@ void ALocoController::SetComponents()
 	if (BrakeLeverComponent)
 	{
 		BrakeLeverComponent->SetTrainPtr(this);
+	}
+}
+
+void ALocoController::Possessed() 
+{
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(TrainControlsMappingContext, 0);
+		}
+	}
+
+	if (IsLocallyControlled() && HUDref)
+	{
+		PC->bShowMouseCursor = true;
+		HUD->AddToViewport();
 	}
 }
 
@@ -130,7 +141,7 @@ void ALocoController::Tick(float DeltaTime)
 	}
 
 	speed = ((GetVelocity().Size2D() * 3600) / 100000);
-	
+
 	HUD->SpeedCalculator(speed);
 }
 
