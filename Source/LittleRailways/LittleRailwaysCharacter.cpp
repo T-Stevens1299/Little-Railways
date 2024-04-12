@@ -47,6 +47,8 @@ void ALittleRailwaysCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
+	PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
 	// Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -87,6 +89,9 @@ void ALittleRailwaysCharacter::SetupPlayerInputComponent(UInputComponent* Player
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ALittleRailwaysCharacter::Look);
+
+		// Interacting
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ALittleRailwaysCharacter::Interact);
 	}
 	else
 	{
@@ -94,6 +99,9 @@ void ALittleRailwaysCharacter::SetupPlayerInputComponent(UInputComponent* Player
 	}
 }
 
+void ALittleRailwaysCharacter::Interact(const FInputActionValue& Value)
+{
+}
 
 void ALittleRailwaysCharacter::Move(const FInputActionValue& Value)
 {

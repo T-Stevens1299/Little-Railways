@@ -90,6 +90,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
 	ABrakeLever* BrakeLeverComponent;
 
+	UPROPERTY(EditDefaultsOnly, Category = "ActorSpawn")
+	TSubclassOf<ACharacter> CharacterToSpawn;
+
 	//Variables
 	bool canMove;
 	bool throttleOn;
@@ -130,6 +133,8 @@ public:
 	void SetComponents();
 
 	void MoveCam();
+
+	void SpawnCharacter();
 
 	void setRegStage(int passedDetent);
 

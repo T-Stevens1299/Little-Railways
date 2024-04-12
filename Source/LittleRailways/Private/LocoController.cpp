@@ -12,6 +12,7 @@
 #include "LittleRailways/BrakeLever.h"
 #include "GameFramework/Controller.h"
 #include <Kismet/GameplayStatics.h>
+#include "LittleRailways/LittleRailwaysCharacter.h"
 #include "GameFramework/PlayerController.h"
 
 // Sets default values
@@ -196,8 +197,9 @@ void ALocoController::DragTrigger(const FInputActionValue& Value)
 
 void ALocoController::ExitTrain(const FInputActionValue& Value) 
 {
-	UE_LOG(LogTemp, Warning, TEXT("ExitTrain"));
 	PC->bShowMouseCursor = false;
+	UE_LOG(LogTemp, Warning, TEXT("SpawnCharacter"));
+	SpawnCharacter();
 }
 
 void ALocoController::ZoomCamera(const FInputActionValue& Value) 
@@ -208,6 +210,13 @@ void ALocoController::ZoomCamera(const FInputActionValue& Value)
 }
 //End Of Input Functions
 
+void ALocoController::SpawnCharacter()
+{
+	FActorSpawnParameters SpawnParams;
+	APawn* SpawnedCharacter = GetWorld()->SpawnActor<APawn>(CharacterToSpawn, (GetActorLocation() + FVector(200.0f, 200.0f, 0.0f)), GetActorRotation(), SpawnParams);
+	PC->Possess(SpawnedCharacter);
+	Cast<ALittleRailwaysCharacter>(SpawnedCharacter)->Possessed();
+}
 
 //Force application functions
 void ALocoController::ApplyTorque(int passedTorqueMultiplier)
