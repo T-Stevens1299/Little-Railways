@@ -199,6 +199,7 @@ void ALocoController::ExitTrain(const FInputActionValue& Value)
 {
 	PC->bShowMouseCursor = false;
 	UE_LOG(LogTemp, Warning, TEXT("SpawnCharacter"));
+	HUD->RemoveFromViewport();
 	SpawnCharacter();
 }
 

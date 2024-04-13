@@ -71,6 +71,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Loco")
 	void Possessed();
 
+	void PerformLineTrace();
+
 protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);

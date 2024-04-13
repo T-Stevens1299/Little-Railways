@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include <Kismet/GameplayStatics.h>
+#include "LocoController.h"
 #include "Engine/LocalPlayer.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -101,6 +102,7 @@ void ALittleRailwaysCharacter::SetupPlayerInputComponent(UInputComponent* Player
 
 void ALittleRailwaysCharacter::Interact(const FInputActionValue& Value)
 {
+	PerformLineTrace();
 }
 
 void ALittleRailwaysCharacter::Move(const FInputActionValue& Value)
@@ -127,6 +129,26 @@ void ALittleRailwaysCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ALittleRailwaysCharacter::PerformLineTrace()
+{
+	FHitResult HitResult;
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
+	
+	FVector startLoc = FirstPersonCameraComponent->GetComponentLocation();
+	FVector endLoc = startLoc + (FirstPersonCameraComponent->GetForwardVector() * 250.0f);
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, startLoc, endLoc, ECollisionChannel::ECC_Camera, params, FCollisionResponseParams()))
+	{
+		ALocoController* foundLoco = Cast<ALocoController>(HitResult.GetActor());
+		PC->Possess(foundLoco);
+		Cast<ALocoController>(foundLoco)->Possessed();
+		Destroy();
+	}
+
+	/*DrawDebugLine(GetWorld(), startLoc, endLoc, FColor::Red, false, 5.0f, 0, 5.0f);*/
 }
 
 void ALittleRailwaysCharacter::SetHasRifle(bool bNewHasRifle)
