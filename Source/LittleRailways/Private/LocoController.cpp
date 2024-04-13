@@ -4,6 +4,7 @@
 
 #include "LocoController.h"
 #include "TrainControlsHUD.h"
+#include "TimerManager.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
@@ -73,7 +74,6 @@ void ALocoController::BeginPlay()
 
 	SetComponents();
 
-
 	HUD = CreateWidget<UTrainControlsHUD>(PC, HUDref);
 	HUD->SetTrainPtr(this);
 
@@ -85,6 +85,7 @@ void ALocoController::BeginPlay()
 	RightWheel1->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
 	RightWheel2->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
 
+	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ALocoController::consumeFuelandWater, 1.0f, true, 1.0f);
 }
 
 //Sets up the references for the child actor components
@@ -142,7 +143,7 @@ void ALocoController::Tick(float DeltaTime)
 		fireActive = false;
 	}
 
-	if (canMove && fireActive)
+	if (canMove && fireActive && TrainTenderComponent->curWaterAmount > 0)
 	{
 		if (throttleOn)
 		{
@@ -156,7 +157,6 @@ void ALocoController::Tick(float DeltaTime)
 				LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -TractiveTorque), 0.0f));
 				RightWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -TractiveTorque), 0.0f));
 			}
-			isMoving = true;
 		}
 	}
 
@@ -345,5 +345,23 @@ void ALocoController::FuelFire()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("NoFuel"));
+	}
+}
+
+void ALocoController::consumeFuelandWater()
+{
+	if (fireActive)
+	{
+		TrainTenderComponent->consumeWater(1.0f);
+		if (curFuelLevel - 1.0f == 0)
+		{
+			curFuelLevel = 0;
+		}
+		else
+		{
+			curFuelLevel = curFuelLevel - 1.0f;
+		}
+		HUD->UpdateWaterLevel(TrainTenderComponent->curWaterAmount);
+		HUD->UpdateFireLevel(curFuelLevel);
 	}
 }

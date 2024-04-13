@@ -162,6 +162,10 @@ public:
 
 	void SetUILevels();
 
+	void consumeFuelandWater();
+
+	FTimerHandle MemberTimerHandle;
+
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraArm; }
 	/** Returns FollowCamera subobject **/
