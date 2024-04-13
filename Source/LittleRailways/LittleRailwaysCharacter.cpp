@@ -143,8 +143,15 @@ void ALittleRailwaysCharacter::PerformLineTrace()
 	if (GetWorld()->LineTraceSingleByChannel(HitResult, startLoc, endLoc, ECollisionChannel::ECC_Camera, params, FCollisionResponseParams()))
 	{
 		ALocoController* foundLoco = Cast<ALocoController>(HitResult.GetActor());
+
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+		{
+			Subsystem->RemoveMappingContext(DefaultMappingContext);
+		}
+
 		PC->Possess(foundLoco);
 		Cast<ALocoController>(foundLoco)->Possessed();
+
 		Destroy();
 	}
 

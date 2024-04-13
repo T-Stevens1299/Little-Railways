@@ -215,6 +215,12 @@ void ALocoController::SpawnCharacter()
 {
 	FActorSpawnParameters SpawnParams;
 	APawn* SpawnedCharacter = GetWorld()->SpawnActor<APawn>(CharacterToSpawn, (GetActorLocation() + FVector(200.0f, 200.0f, 0.0f)), GetActorRotation(), SpawnParams);
+	
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+	{
+		Subsystem->RemoveMappingContext(TrainControlsMappingContext);
+	}
+
 	PC->Possess(SpawnedCharacter);
 	Cast<ALittleRailwaysCharacter>(SpawnedCharacter)->Possessed();
 }
