@@ -60,4 +60,9 @@ public:
 	float fuelCapacity;
 
 	float curFuelAmount;
+
+	//Loco Ref
+	class ALocoController* TrainRef;
+
+	void SetTrainPtr(ALocoController* TrainPrt);
 };

@@ -21,6 +21,11 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Widget")
 	void OnSpeedChanged(const FText& CurrentSpeedText);
 
+	UFUNCTION()
+	void OnButtonClicked();
+
+	virtual void NativeConstruct() override;
+
 public:
 	void SpeedCalculator(float speedPassed);
 
@@ -37,7 +42,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Slider")
 	void MoveBrakeSlider(float passedValue);
 
+	void UpdateFireLevel(float updatedFirelevel);
+
+	void UpdateWaterLevel(float updatedWaterLevel);
+
+	void UpdateCoalLevel(float updatedCoalLevel);
+
 protected:
+
+	//UI Components
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class USlider* RegulatorSlider;
 
@@ -46,4 +59,22 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class USlider* BreakSlider;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* AddCoal;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UProgressBar* FireLevel;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UProgressBar* WaterLevel;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UProgressBar* CoalLevel;
+
+public:
+	//Stored Totals
+	float totalCoalLevel;
+	float totalWaterLevel;
+
 };

@@ -46,12 +46,26 @@ void ALocomotiveTender::Tick(float DeltaTime)
 
 void ALocomotiveTender::consumeFuel(float fuelConsumed)
 {
-	curFuelAmount = curFuelAmount - fuelConsumed;
+	if (curFuelAmount - fuelConsumed <= 0)
+	{
+		curFuelAmount = 0;
+	}
+	else
+	{
+		curFuelAmount = curFuelAmount - fuelConsumed;
+	}
 }
 
 void ALocomotiveTender::consumeWater(float waterConsumed)
 {
-	curWaterAmount = curWaterAmount - waterConsumed;
+	if (curWaterAmount - waterConsumed <= 0)
+	{
+		curWaterAmount = 0;
+	}
+	else
+	{
+		curWaterAmount = curWaterAmount - waterConsumed;
+	}
 }
 
 void ALocomotiveTender::increaseFuel(float fuelToAdd)
@@ -74,4 +88,9 @@ void ALocomotiveTender::increaseWater(float waterToAdd)
 			curWaterAmount = curWaterAmount + waterToAdd;
 		}
 	}
+}
+
+void ALocomotiveTender::SetTrainPtr(ALocoController* TrainPrt)
+{
+	TrainRef = TrainPrt;
 }

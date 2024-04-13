@@ -10,6 +10,7 @@
 #include "LittleRailways/Reverser.h"
 #include "LittleRailways/Regulator.h"
 #include "LittleRailways/BrakeLever.h"
+#include "LocomotiveTender.h"
 #include "GameFramework/Controller.h"
 #include <Kismet/GameplayStatics.h>
 #include "LittleRailways/LittleRailwaysCharacter.h"
@@ -50,6 +51,9 @@ ALocoController::ALocoController()
 	ReverserMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("ReverserComponent"));
 	ReverserMesh->SetupAttachment(LocoBody);
 
+	TenderMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("TenderComponent"));
+	TenderMesh->SetupAttachment(LocoBody);
+
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
 	CameraArm->SetupAttachment(RootComponent);
 	CameraArm->TargetArmLength = 400.0f;	
@@ -73,6 +77,8 @@ void ALocoController::BeginPlay()
 	HUD = CreateWidget<UTrainControlsHUD>(PC, HUDref);
 	HUD->SetTrainPtr(this);
 
+	SetUILevels();
+
 	//Setting Locos Max Speed
 	LeftWheel1->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
 	LeftWheel2->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
@@ -81,6 +87,7 @@ void ALocoController::BeginPlay()
 
 }
 
+//Sets up the references for the child actor components
 void ALocoController::SetComponents()
 {
 	ReverserComponent = Cast<AReverser>(ReverserMesh->GetChildActor());
@@ -99,6 +106,12 @@ void ALocoController::SetComponents()
 	if (BrakeLeverComponent)
 	{
 		BrakeLeverComponent->SetTrainPtr(this);
+	}
+
+	TrainTenderComponent = Cast<ALocomotiveTender>(TenderMesh->GetChildActor());
+	if (TrainTenderComponent)
+	{
+		TrainTenderComponent->SetTrainPtr(this);
 	}
 }
 
@@ -124,7 +137,12 @@ void ALocoController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (canMove)
+	if (curFuelLevel == 0)
+	{
+		fireActive = false;
+	}
+
+	if (canMove && fireActive)
 	{
 		if (throttleOn)
 		{
@@ -138,6 +156,7 @@ void ALocoController::Tick(float DeltaTime)
 				LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -TractiveTorque), 0.0f));
 				RightWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -TractiveTorque), 0.0f));
 			}
+			isMoving = true;
 		}
 	}
 
@@ -163,8 +182,6 @@ void ALocoController::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 }
 
 //Input Functions
-
-
 void ALocoController::CameraDrag(const FInputActionValue& Value)
 {
 	if (isPressed == true)
@@ -199,7 +216,7 @@ void ALocoController::ExitTrain(const FInputActionValue& Value)
 {
 	PC->bShowMouseCursor = false;
 	UE_LOG(LogTemp, Warning, TEXT("SpawnCharacter"));
-	HUD->RemoveFromViewport();
+	HUD->RemoveFromParent();
 	SpawnCharacter();
 }
 
@@ -291,4 +308,42 @@ void ALocoController::setReverserStage(int passedDetent)
 void ALocoController::setBrakeStage(int passedDetent)
 {
 	BrakeLeverComponent->engageBrakeStage(passedDetent);
+}
+
+//Fuel Functions
+void ALocoController::SetUILevels()
+{
+	HUD->totalCoalLevel = TrainTenderComponent->fuelCapacity;
+	HUD->totalWaterLevel = TrainTenderComponent->waterCapacity;
+
+	HUD->UpdateFireLevel(0.0f);
+	HUD->UpdateWaterLevel(TrainTenderComponent->waterCapacity);
+	HUD->UpdateCoalLevel(TrainTenderComponent->fuelCapacity);
+}
+
+void ALocoController::FuelFire()
+{
+	if (!(TrainTenderComponent->curFuelAmount <= 0))
+	{
+		if (curFuelLevel < 100)
+		{
+			if (curFuelLevel + 25.0f <= 100)
+			{
+				curFuelLevel = curFuelLevel + 25.0f;
+			}
+			else
+			{
+				curFuelLevel = 100;
+			}
+		}
+
+		fireActive = true;
+		TrainTenderComponent->consumeFuel(5.0f);
+		HUD->UpdateFireLevel(curFuelLevel);
+		HUD->UpdateCoalLevel(TrainTenderComponent->curFuelAmount);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NoFuel"));
+	}
 }

@@ -19,6 +19,7 @@ struct FInputActionValue;
 class AReverser;
 class ARegulator;
 class ABrakeLever;
+class ALocomotiveTender;
 
 UCLASS()
 class LITTLERAILWAYS_API ALocoController : public APawn, public IBPI_Braking
@@ -80,6 +81,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* ReverserMesh;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* TenderMesh;
+
 	/** Lever Components */
 	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
 	AReverser* ReverserComponent;
@@ -90,15 +94,27 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
 	ABrakeLever* BrakeLeverComponent;
 
+	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
+	ALocomotiveTender* TrainTenderComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = "ActorSpawn")
 	TSubclassOf<ACharacter> CharacterToSpawn;
 
 	//Variables
+	//Fuel variables
+	float curFuelLevel = 0;
+
+	bool fireActive = false;
+
+	bool isMoving;
+
+	//Movement Bools
 	bool canMove;
 	bool throttleOn;
 	bool isReversing;
 	bool isPressed = false;
 
+	//Movement Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	float TractiveTorque;
 
@@ -141,6 +157,10 @@ public:
 	void setBrakeStage(int passedDetent);
 
 	void setReverserStage(int passedDetent);
+
+	void FuelFire();
+
+	void SetUILevels();
 
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraArm; }
