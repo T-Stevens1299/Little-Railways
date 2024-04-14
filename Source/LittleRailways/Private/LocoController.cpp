@@ -85,7 +85,7 @@ void ALocoController::BeginPlay()
 	RightWheel1->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
 	RightWheel2->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
 
-	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ALocoController::consumeFuelandWater, 1.0f, true, 1.0f);
+	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ALocoController::consumeFuelandWater, 10.0f, true, 10.0f);
 }
 
 //Sets up the references for the child actor components
