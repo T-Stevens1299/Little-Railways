@@ -16,6 +16,7 @@ void AFuelingPoint::BeginPlay()
 {
 	Super::BeginPlay();
 	isActive = false;
+	currentMaterialLevel = materialCapacity;
 	if (isWater)
 	{
 		GetWorldTimerManager().SetTimer(refreshTimer, this, &AFuelingPoint::RefreshWaterAmount, 10.0f, true, 10.0f);
@@ -31,28 +32,30 @@ void AFuelingPoint::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AFuelingPoint::onClicked()
+void AFuelingPoint::Interact_Implementation()
 {
 	if (!isActive)
 	{
 		activated();
+		UE_LOG(LogTemp, Warning, TEXT("Active"));
 	}
 	else
 	{
 		deactivated();
+		UE_LOG(LogTemp, Warning, TEXT("Not Active"));
 	}
 }
 
 void AFuelingPoint::activated()
 {
-	isActive = true;
 	GetWorldTimerManager().UnPauseTimer(consumeTimer);
+	isActive = true;
 }
 
 void AFuelingPoint::deactivated()
 {
-	isActive = false;
 	GetWorldTimerManager().PauseTimer(consumeTimer);
+	isActive = false;
 }
 
 void AFuelingPoint::consumeMaterial()
@@ -74,15 +77,16 @@ void AFuelingPoint::RefreshWaterAmount()
 {
 	if (!isFull) 
 	{
-		if (currentMaterialLevel + 1 == materialCapacity)
+		if ((currentMaterialLevel + 1.0f) == materialCapacity)
 		{
 			currentMaterialLevel = materialCapacity;
 			isFull = true;
+			UE_LOG(LogTemp, Warning, TEXT("FuelRefreshed"));
 		}
 		else
 		{
 			currentMaterialLevel++;
+			UE_LOG(LogTemp, Warning, TEXT("RefreshFuel"));
 		}
-		UE_LOG(LogTemp, Warning, TEXT("RefreshFuel"));
 	}
 }

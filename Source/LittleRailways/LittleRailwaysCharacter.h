@@ -42,6 +42,9 @@ class ALittleRailwaysCharacter : public ACharacter
 	UInputAction* MoveAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* TrainBoardAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
 	
 public:
@@ -80,8 +83,11 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 	
-	/** Called for interacting input */
+	/** Called for boarding train input */
 	void Interact(const FInputActionValue& Value);
+
+	/** Called for interacting input */
+	void BoardTrain(const FInputActionValue& Value);
 
 protected:
 	// APawn interface

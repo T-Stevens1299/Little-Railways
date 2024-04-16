@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "BPI_Interact.h"
 #include "FuelingPoint.generated.h"
 
 UCLASS()
-class LITTLERAILWAYS_API AFuelingPoint : public AActor
+class LITTLERAILWAYS_API AFuelingPoint : public AActor, public IBPI_Interact
 {
 	GENERATED_BODY()
 	
@@ -18,6 +19,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FuelPoint", meta = (AllowPrivateAccess = "true"))
+	//UBoxComponent* 
 
 public:	
 	// Called every frame
@@ -33,8 +37,8 @@ public:
 
 	void deactivated();
 
-	UFUNCTION(BlueprintCallable)
-	void onClicked();
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "InteractEventRef")
+	void Interact(); void Interact_Implementation() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FuelType")
 	bool isWater;
@@ -46,6 +50,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FuelCapacity")
 	float materialCapacity;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FuelCapacity")
 	float currentMaterialLevel;
 
 	FTimerHandle consumeTimer;

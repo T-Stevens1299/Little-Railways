@@ -11,6 +11,7 @@
 #include "InputActionValue.h"
 #include <Kismet/GameplayStatics.h>
 #include "LocoController.h"
+#include "BPI_Interact.h"
 #include "Engine/LocalPlayer.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -92,6 +93,8 @@ void ALittleRailwaysCharacter::SetupPlayerInputComponent(UInputComponent* Player
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ALittleRailwaysCharacter::Look);
 
 		// Interacting
+		EnhancedInputComponent->BindAction(TrainBoardAction, ETriggerEvent::Triggered, this, &ALittleRailwaysCharacter::BoardTrain);
+	
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ALittleRailwaysCharacter::Interact);
 	}
 	else
@@ -100,9 +103,29 @@ void ALittleRailwaysCharacter::SetupPlayerInputComponent(UInputComponent* Player
 	}
 }
 
-void ALittleRailwaysCharacter::Interact(const FInputActionValue& Value)
+void ALittleRailwaysCharacter::BoardTrain(const FInputActionValue& Value)
 {
 	PerformLineTrace();
+}
+
+void ALittleRailwaysCharacter::Interact(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Interact"));
+	FHitResult HitResult;
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
+
+	FVector startLoc = FirstPersonCameraComponent->GetComponentLocation();
+	FVector endLoc = startLoc + (FirstPersonCameraComponent->GetForwardVector() * 250.0f);
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, startLoc, endLoc, ECollisionChannel::ECC_Camera, params, FCollisionResponseParams()))
+	{
+		IBPI_Interact* InteractInterface = Cast<IBPI_Interact>(HitResult.GetActor());
+		if (InteractInterface)
+		{
+			InteractInterface->Execute_Interact(HitResult.GetActor());
+		}
+	}
 }
 
 void ALittleRailwaysCharacter::Move(const FInputActionValue& Value)
