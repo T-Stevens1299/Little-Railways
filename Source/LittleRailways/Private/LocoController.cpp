@@ -365,3 +365,15 @@ void ALocoController::consumeFuelandWater()
 		HUD->UpdateFireLevel(curFuelLevel);
 	}
 }
+
+void ALocoController::AddFuel_Implementation(float passedFuelToAdd, bool isWater)
+{
+	if (isWater)
+	{
+		TrainTenderComponent->increaseWater(passedFuelToAdd);
+	}
+	else
+	{
+		TrainTenderComponent->increaseFuel(passedFuelToAdd);
+	}
+}

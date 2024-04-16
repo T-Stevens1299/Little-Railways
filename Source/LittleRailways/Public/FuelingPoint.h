@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "BPI_Interact.h"
+#include "Components/BoxComponent.h"
 #include "FuelingPoint.generated.h"
 
 UCLASS()
@@ -20,8 +21,14 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FuelPoint", meta = (AllowPrivateAccess = "true"))
-	//UBoxComponent* 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "brake", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* TowerMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "brake", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* MovingMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FuelPoint", meta = (AllowPrivateAccess = "true"))
+	UBoxComponent* TrainDetector;
 
 public:	
 	// Called every frame
@@ -36,6 +43,8 @@ public:
 	void activated();
 
 	void deactivated();
+
+	void detectTrain();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "InteractEventRef")
 	void Interact(); void Interact_Implementation() override;

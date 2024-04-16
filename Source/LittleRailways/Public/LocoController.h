@@ -9,6 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "LittleRailways/BPI_Braking.h"
+#include "BPI_Fueling.h"
 #include "Blueprint/UserWidget.h"
 #include "LocoController.generated.h"
 
@@ -22,7 +23,7 @@ class ABrakeLever;
 class ALocomotiveTender;
 
 UCLASS()
-class LITTLERAILWAYS_API ALocoController : public APawn, public IBPI_Braking
+class LITTLERAILWAYS_API ALocoController : public APawn, public IBPI_Braking, public IBPI_Fueling
 {
 	GENERATED_BODY()
 
@@ -145,6 +146,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControlsRef")
 	void SetReverser(int passedDetent); void SetReverser_Implementation(int passedDetent) override;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "InteractEventRef")
+	void AddFuel(float passedFuelToAdd, bool isWater); void AddFuel_Implementation(float passedFuelToAdd, bool isWater) override;
 
 	void SetComponents();
 

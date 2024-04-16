@@ -2,6 +2,8 @@
 
 
 #include "FuelingPoint.h"
+#include "LocoController.h"
+#include "BPI_Fueling.h"
 
 // Sets default values
 AFuelingPoint::AFuelingPoint()
@@ -9,6 +11,14 @@ AFuelingPoint::AFuelingPoint()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	TowerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootComponent"));
+	TowerMesh->SetupAttachment(GetRootComponent());
+
+	MovingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MoveableComponent"));
+	MovingMesh->SetupAttachment(RootComponent);
+
+	TrainDetector = CreateDefaultSubobject<UBoxComponent>(TEXT("DetectorComponent"));
+	TrainDetector->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -61,8 +71,24 @@ void AFuelingPoint::deactivated()
 void AFuelingPoint::consumeMaterial()
 {
 	isFull = false;
-	UE_LOG(LogTemp, Warning, TEXT("ConsumeFuel"));
 	currentMaterialLevel--;
+	UE_LOG(LogTemp, Warning, TEXT("ConsumeFuel"));
+	detectTrain();
+}
+
+void AFuelingPoint::detectTrain()
+{
+	TArray<AActor*> actorsToCheck;
+	TrainDetector->GetOverlappingActors(actorsToCheck);
+	for (int i = 0; i < actorsToCheck.Num(); i++)
+	{
+		IBPI_Fueling* fuelingInterface = Cast<IBPI_Fueling>(actorsToCheck[i]);
+		if (fuelingInterface)
+		{
+			fuelingInterface->Execute_AddFuel(actorsToCheck[i], 5.0f, isWater);
+			UE_LOG(LogTemp, Warning, TEXT("AddFuel"));
+		}
+	}
 }
 
 void AFuelingPoint::RefreshCoalAmount()

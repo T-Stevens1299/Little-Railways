@@ -31,9 +31,9 @@ void ALocomotiveTender::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	curFuelAmount = fuelCapacity;
+	curFuelAmount = 0;
 
-	curWaterAmount = waterCapacity;
+	curWaterAmount = 0;
 
 }
 
@@ -76,6 +76,11 @@ void ALocomotiveTender::increaseFuel(float fuelToAdd)
 		{
 			curFuelAmount = curFuelAmount + fuelToAdd;
 		}
+		else
+		{
+			curFuelAmount = fuelCapacity;
+		}
+		UE_LOG(LogTemp, Warning, TEXT("CoalIncreased"));
 	}
 }
 
@@ -87,6 +92,11 @@ void ALocomotiveTender::increaseWater(float waterToAdd)
 		{
 			curWaterAmount = curWaterAmount + waterToAdd;
 		}
+		else
+		{
+			curWaterAmount = waterCapacity;
+		}
+		UE_LOG(LogTemp, Warning, TEXT("WaterIncreased"));
 	}
 }
 
