@@ -31,9 +31,9 @@ void ALocomotiveTender::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	curFuelAmount = 0;
+	curFuelAmount = fuelCapacity;
 
-	curWaterAmount = 0;
+	curWaterAmount = waterCapacity;
 
 }
 

@@ -12,13 +12,16 @@ AFuelingPoint::AFuelingPoint()
 	PrimaryActorTick.bCanEverTick = true;
 
 	TowerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootComponent"));
-	TowerMesh->SetupAttachment(GetRootComponent());
+	TowerMesh->SetupAttachment(RootComponent);
 
 	MovingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MoveableComponent"));
 	MovingMesh->SetupAttachment(RootComponent);
 
 	TrainDetector = CreateDefaultSubobject<UBoxComponent>(TEXT("DetectorComponent"));
 	TrainDetector->SetupAttachment(RootComponent);
+
+	fuelAmountDisplay = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextDisplayComponent"));
+	fuelAmountDisplay->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -27,9 +30,10 @@ void AFuelingPoint::BeginPlay()
 	Super::BeginPlay();
 	isActive = false;
 	currentMaterialLevel = materialCapacity;
+	setTextRender();
 	if (isWater)
 	{
-		GetWorldTimerManager().SetTimer(refreshTimer, this, &AFuelingPoint::RefreshWaterAmount, 10.0f, true, 10.0f);
+		GetWorldTimerManager().SetTimer(refreshTimer, this, &AFuelingPoint::RefreshWaterAmount, 20.0f, true, 20.0f);
 	}
 
 	GetWorldTimerManager().SetTimer(consumeTimer, this, &AFuelingPoint::consumeMaterial, 5.0f, true, 5.0f);
@@ -74,6 +78,7 @@ void AFuelingPoint::consumeMaterial()
 	currentMaterialLevel--;
 	UE_LOG(LogTemp, Warning, TEXT("ConsumeFuel"));
 	detectTrain();
+	setTextRender();
 }
 
 void AFuelingPoint::detectTrain()
@@ -97,6 +102,7 @@ void AFuelingPoint::RefreshCoalAmount()
 	{
 		currentMaterialLevel = materialCapacity;
 	}
+	setTextRender();
 }
 
 void AFuelingPoint::RefreshWaterAmount()
@@ -114,5 +120,15 @@ void AFuelingPoint::RefreshWaterAmount()
 			currentMaterialLevel++;
 			UE_LOG(LogTemp, Warning, TEXT("RefreshFuel"));
 		}
+		setTextRender();
 	}
+}
+
+void AFuelingPoint::setTextRender()
+{
+	FString currentLevel = FString::SanitizeFloat(currentMaterialLevel);
+	FString totalCapacity = FString::SanitizeFloat(materialCapacity);
+	FText TextToDisplay = FText::FromString(currentLevel + "/" + totalCapacity);
+
+	fuelAmountDisplay->SetText(TextToDisplay);
 }
