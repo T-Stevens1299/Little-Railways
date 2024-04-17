@@ -36,8 +36,11 @@ ATestWagon::ATestWagon()
 void ATestWagon::BeginPlay()
 {
 	Super::BeginPlay();
-	loadPercentage = 0;
-	SetWagonLoad(loadPercentage);
+
+	GetWorldTimerManager().SetTimer(unloadTimer, this, &ATestWagon::UnloadWagon, 2.0f, true, 2.0f);
+	GetWorldTimerManager().PauseTimer(unloadTimer);
+
+	isUnloading = false;
 }
 
 // Called every frame
@@ -49,10 +52,10 @@ void ATestWagon::Tick(float DeltaTime)
 
 void ATestWagon::LoadWagon() 
 {
-	if (loadPercentage < 100) 
+	if (currentLoad + 1 <= totalLoad)
 	{
-		loadPercentage = loadPercentage + 25;
-		SetWagonLoad(loadPercentage);
+		currentLoad++;
+		SetWagonLoad(currentLoad);
 	}
 	else
 	{
@@ -60,15 +63,28 @@ void ATestWagon::LoadWagon()
 	}
 }
 
-void ATestWagon::SetWagonLoad(int loadPercent)
+void ATestWagon::UnloadWagon()
 {
-	for (int i = 0; i < 5; i++) 
+	if ((currentLoad - 1) == 0)
 	{
-		if ((i * 25) == loadPercent) 
-		{
-			FillMesh->SetStaticMesh(LoadAmount[i]);
-		}
+		GetWorldTimerManager().PauseTimer(unloadTimer);
+		isUnloading = false;
+		UE_LOG(LogTemp, Warning, TEXT("StoppedLoading"));
 	}
+	currentLoad--;
+	SetWagonLoad(currentLoad);
+	SpawnLoadActor();
+}
+
+void ATestWagon::SetWagonLoad(int CurrentLoad)
+{
+	FillMesh->SetStaticMesh(LoadAmount[CurrentLoad]);
+}
+
+void ATestWagon::SpawnLoadActor()
+{
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<AActor>(spawnedActor, (GetActorLocation() + FVector(0.0f, 200.0f, 200.0f)), GetActorRotation(), SpawnParams);
 }
 
 void ATestWagon::ApplyBrakes(int passedBrakeVal) 
@@ -84,4 +100,14 @@ void ATestWagon::ApplyBrakes(int passedBrakeVal)
 void ATestWagon::Brake_Implementation(int passedForce) 
 {
 	ApplyBrakes(passedForce);
+}
+
+void ATestWagon::Interact_Implementation()
+{
+	if (!isUnloading)
+	{
+		GetWorldTimerManager().UnPauseTimer(unloadTimer);
+		isUnloading = true;
+		UE_LOG(LogTemp, Warning, TEXT("WagonUnloading"));
+	}
 }

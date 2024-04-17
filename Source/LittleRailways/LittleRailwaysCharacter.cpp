@@ -138,6 +138,7 @@ void ALittleRailwaysCharacter::Interact(const FInputActionValue& Value)
 		IBPI_Interact* InteractInterface = Cast<IBPI_Interact>(HitResult.GetActor());
 		if (InteractInterface)
 		{
+			DrawDebugLine(GetWorld(), startLoc, endLoc, HitResult.GetActor() ? FColor::Blue : FColor::Red, false, 5.0f, 0, 10.0f);
 			InteractInterface->Execute_Interact(HitResult.GetActor());
 		}
 	}
