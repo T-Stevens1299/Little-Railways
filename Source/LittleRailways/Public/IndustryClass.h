@@ -40,7 +40,7 @@ public:
 	UChildActorComponent* LoadingDevice;
 
 	//Variables
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProductManagement")
+	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
 	bool requiresInput;
 
 	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
@@ -49,14 +49,26 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
 	int productBminRequiredAmount;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProductManagement")
+	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
 	int outputProduct;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProductManagement")
+	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
 	int inputProductA;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProductManagement")
+	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
 	int inputProductB;
+
+	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
+	int productaPayout;
+
+	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
+	int productbPayout;
+
+	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
+	int productaXP;
+
+	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
+	int productbXP;
 
 	//Functions
 	void destroyProductActor();
@@ -66,6 +78,8 @@ public:
 	void increaseOutputProduct();
 
 	void LoadProduct();
+
+	void increaseMoneyXP(int passedMoney, int passedXP);
 
 	UFUNCTION(BlueprintCallable, Category = "ProductTest")
 	void increaseProductA();
@@ -93,5 +107,5 @@ public:
 
 	AActor* actorToDestroy;
 
-
+	class ALittleRailwaysGameMode* gmRef;
 };

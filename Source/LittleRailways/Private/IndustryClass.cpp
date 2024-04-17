@@ -3,7 +3,10 @@
 
 #include "IndustryClass.h"
 #include "IndustryWagonLoader.h"
+#include "LittleRailways/LittleRailwaysGameMode.h"
 #include "LittleRailways/TestWagon.h"
+#include "BPI_StatsIncrease.h"
+#include <Kismet/GameplayStatics.h>
 
 // Sets default values
 AIndustryClass::AIndustryClass()
@@ -28,6 +31,8 @@ AIndustryClass::AIndustryClass()
 void AIndustryClass::BeginPlay()
 {
 	Super::BeginPlay();
+
+	gmRef = Cast<ALittleRailwaysGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
 	WagonLoaderComponent = Cast<AIndustryWagonLoader>(LoadingDevice->GetChildActor());
 	if (WagonLoaderComponent)
@@ -76,12 +81,14 @@ void AIndustryClass::increaseOutputProduct()
 void AIndustryClass::increaseProductA()
 {
 	inputProductA++;
+	increaseMoneyXP(productaPayout, productaXP);
 	UE_LOG(LogTemp, Warning, TEXT("AInputIncreased"));
 }
 
 void AIndustryClass::increaseProductB()
 {
 	inputProductB++;
+	increaseMoneyXP(productbPayout, productbXP);
 	UE_LOG(LogTemp, Warning, TEXT("BInputIncreased"));
 }
 
@@ -124,6 +131,16 @@ void AIndustryClass::LoadProduct()
 				outputProduct--;
 			}
 		}
+	}
+}
+
+void AIndustryClass::increaseMoneyXP(int passedMoney, int passedXP)
+{
+	IBPI_StatsIncrease* increaseStats = Cast<IBPI_StatsIncrease>(gmRef);
+	if (increaseStats) 
+	{
+		increaseStats->Execute_addMoney(gmRef, passedMoney);
+		increaseStats->Execute_addXP(gmRef, passedXP);
 	}
 }
 
