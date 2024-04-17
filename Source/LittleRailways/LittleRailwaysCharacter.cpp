@@ -12,6 +12,7 @@
 #include <Kismet/GameplayStatics.h>
 #include "LocoController.h"
 #include "BPI_Interact.h"
+#include "BPI_StatsIncrease.h"
 #include "Engine/LocalPlayer.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -50,6 +51,7 @@ void ALittleRailwaysCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	gmRef = Cast<ALittleRailwaysGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
 	// Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
@@ -92,10 +94,14 @@ void ALittleRailwaysCharacter::SetupPlayerInputComponent(UInputComponent* Player
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ALittleRailwaysCharacter::Look);
 
-		// Interacting
+		// Train Boarding
 		EnhancedInputComponent->BindAction(TrainBoardAction, ETriggerEvent::Triggered, this, &ALittleRailwaysCharacter::BoardTrain);
-	
+		
+		// Interacting
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ALittleRailwaysCharacter::Interact);
+		
+		// HUD Toggling
+		EnhancedInputComponent->BindAction(HudAction, ETriggerEvent::Triggered, this, &ALittleRailwaysCharacter::toggleHUD);
 	}
 	else
 	{
@@ -103,8 +109,17 @@ void ALittleRailwaysCharacter::SetupPlayerInputComponent(UInputComponent* Player
 	}
 }
 
+void ALittleRailwaysCharacter::toggleHUD(const FInputActionValue& Value)
+{
+	gmRef->ToggleHUD();
+}
+
 void ALittleRailwaysCharacter::BoardTrain(const FInputActionValue& Value)
 {
+	if (gmRef->HUDon)
+	{
+		gmRef->ToggleHUD();
+	}
 	PerformLineTrace();
 }
 

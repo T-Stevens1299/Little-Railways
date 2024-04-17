@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "LittleRailwaysGameMode.h"
 #include "Logging/LogMacros.h"
 #include "LittleRailwaysCharacter.generated.h"
 
@@ -46,6 +47,9 @@ class ALittleRailwaysCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* HudAction;
 	
 public:
 	ALittleRailwaysCharacter();
@@ -89,6 +93,8 @@ protected:
 	/** Called for interacting input */
 	void BoardTrain(const FInputActionValue& Value);
 
+	void toggleHUD(const FInputActionValue& Value);
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
@@ -96,6 +102,8 @@ protected:
 
 	//Player Controller Ref
 	APlayerController* PC;
+
+	ALittleRailwaysGameMode* gmRef;
 
 public:
 	/** Returns Mesh1P subobject **/
