@@ -23,7 +23,8 @@ void ALittleRailwaysGameMode::BeginPlay()
 	PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
 	HUD = CreateWidget<UPlayerProgressionHUD>(PC, HUDref);
-	//HUD->setGMptr(this);
+	HUD->changeLevel(currentLevel);
+	calculatePercentage();
 }
 
 void ALittleRailwaysGameMode::addXP_Implementation(int passedXP)
@@ -31,6 +32,7 @@ void ALittleRailwaysGameMode::addXP_Implementation(int passedXP)
 	currentXP = currentXP + passedXP;
 	HUD->changeXPAmount(currentXP);
 	checkLevelUp();
+	calculatePercentage();
 }
 
 void ALittleRailwaysGameMode::addMoney_Implementation(int passedMoney)
@@ -41,7 +43,32 @@ void ALittleRailwaysGameMode::addMoney_Implementation(int passedMoney)
 
 void ALittleRailwaysGameMode::checkLevelUp()
 {
+	for (int i = 0; i < levelCaps.Num(); i++)
+	{
+		if (currentXP >= levelCaps[i])
+		{
+			currentLevel = i+1;
+			HUD->changeLevel(currentLevel);
+		}
+	}
+}
 
+void ALittleRailwaysGameMode::calculatePercentage()
+{
+	if (currentLevel != 5)
+	{
+		//convert to floats - dividing from ints does not work
+		float xp = currentXP - levelCaps[currentLevel - 1];
+		float xpbound = levelCaps[currentLevel] - levelCaps[currentLevel - 1];
+
+		float percentage = (xp / xpbound);
+
+		HUD->updateProgressBar(percentage);
+	}
+	else
+	{
+		HUD->updateProgressBar(1.0f);
+	}
 }
 
 void ALittleRailwaysGameMode::ToggleHUD()

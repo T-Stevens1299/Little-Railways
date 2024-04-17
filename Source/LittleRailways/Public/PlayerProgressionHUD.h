@@ -20,9 +20,19 @@ public:
 	
 	void changeXPAmount(int passedXP);
 
+	void changeLevel(int passedLevel);
+
+	void updateProgressBar(float passedPercentage);
+
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* MoneyAmount;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* XPamount;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* CurrentLevel;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UProgressBar* LevelProgress;
 };

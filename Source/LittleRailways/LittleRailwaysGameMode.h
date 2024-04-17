@@ -28,15 +28,20 @@ public:
 
 	void checkLevelUp();
 
+	void calculatePercentage();
+
 	void ToggleHUD();
 
 	int currentXP;
 
 	int currentMoney;
 
-	int currentLevel;
+	int currentLevel = 1;
 
 	bool HUDon = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "LevelCaps")
+	TArray<int> levelCaps;
 
 	/** HUD Widget */
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")

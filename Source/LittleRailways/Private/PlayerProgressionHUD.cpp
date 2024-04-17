@@ -4,6 +4,7 @@
 #include "PlayerProgressionHUD.h"
 #include "LittleRailways/LittleRailwaysGameMode.h"
 #include "Components/TextBlock.h"
+#include "Components/ProgressBar.h"
 
 UPlayerProgressionHUD::UPlayerProgressionHUD(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
@@ -21,4 +22,15 @@ void UPlayerProgressionHUD::changeXPAmount(int passedXP)
 {
 	FString xp = FString::FromInt(passedXP);
 	XPamount->SetText(FText::FromString(FString(xp)));
+}
+
+void UPlayerProgressionHUD::changeLevel(int passedLevel)
+{
+	FString level = FString::FromInt(passedLevel);
+	CurrentLevel->SetText(FText::FromString(FString(level)));
+}
+
+void UPlayerProgressionHUD::updateProgressBar(float passedPercentage)
+{
+	LevelProgress->SetPercent(passedPercentage);
 }
