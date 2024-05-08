@@ -55,14 +55,16 @@ void APointsClass::changePoints()
 {
 	if (isStraight)
 	{
-		StraightCollision->SetRelativeLocation(FVector(0.0f, 0.0f, -200.0f));
-		CurvedCollision->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+		StraightCollision->SetRelativeLocation(hidden);
+		CurvedCollision->SetRelativeLocation(active);
+		SwitchRails->SetRelativeLocationAndRotation(curved, curvedRot);
 		isStraight = false;
 	}
 	else
 	{
-		CurvedCollision->SetRelativeLocation(FVector(0.0f, 0.0f, -200.0f));
-		StraightCollision->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+		CurvedCollision->SetRelativeLocation(hidden);
+		StraightCollision->SetRelativeLocation(active);
+		SwitchRails->SetRelativeLocationAndRotation(straight, straightRot);
 		isStraight = true;
 	}
 }

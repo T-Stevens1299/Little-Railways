@@ -57,4 +57,14 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "InteractEventRef")
 	void Interact(); void Interact_Implementation() override;
+
+protected:
+	FVector hidden = FVector(0.0f, 0.0f, -200.0f);
+	FVector active = FVector(0.0f, 0.0f, 0.0f);
+
+	FVector straight = FVector(0.0f, -5.0f, 0.0f);
+	FVector curved = FVector(0.0f, 10.0f, 0.0f);
+
+	FRotator straightRot = FRotator(0.0f, 0.5f, 0.0f);
+	FRotator curvedRot = FRotator(0.0f, -1.0f, 0.0f);
 };
