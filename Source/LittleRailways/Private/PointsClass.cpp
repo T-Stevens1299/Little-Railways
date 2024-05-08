@@ -24,18 +24,18 @@ APointsClass::APointsClass()
 	SwitchRails = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SwitchRailsComponent"));
 	SwitchRails->SetupAttachment(Ballast);
 
-	StraightColBox1 = CreateDefaultSubobject<UBoxComponent>(TEXT("SCB1Component"));
-	StraightColBox1->SetupAttachment(Ballast);
+	StraightCollision = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StraightCollisionComponent"));
+	StraightCollision->SetupAttachment(Ballast);
 
-	StraightColBox2 = CreateDefaultSubobject<UBoxComponent>(TEXT("SCB2Component"));
-	StraightColBox2->SetupAttachment(Ballast);
+	CurvedCollision = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CurvedCollisionComponent"));
+	CurvedCollision->SetupAttachment(Ballast);
 }
 
 // Called when the game starts or when spawned
 void APointsClass::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	changePoints();
 }
 
 // Called every frame
@@ -45,3 +45,24 @@ void APointsClass::Tick(float DeltaTime)
 
 }
 
+void APointsClass::Interact_Implementation()
+{
+	changePoints();
+}
+
+//Switches the points depending on their current direction
+void APointsClass::changePoints()
+{
+	if (isStraight)
+	{
+		StraightCollision->SetRelativeLocation(FVector(0.0f, 0.0f, -200.0f));
+		CurvedCollision->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+		isStraight = false;
+	}
+	else
+	{
+		CurvedCollision->SetRelativeLocation(FVector(0.0f, 0.0f, -200.0f));
+		StraightCollision->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+		isStraight = true;
+	}
+}

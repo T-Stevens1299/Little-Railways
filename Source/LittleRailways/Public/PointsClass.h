@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
+#include "BPI_Interact.h"
 #include "PointsClass.generated.h"
 
 UCLASS()
-class LITTLERAILWAYS_API APointsClass : public AActor
+class LITTLERAILWAYS_API APointsClass : public AActor, public IBPI_Interact
 {
 	GENERATED_BODY()
 	
@@ -40,12 +41,20 @@ public:
 	UStaticMeshComponent* SwitchRails;
 
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "StraightCollisionA", meta = (AllowPrivateAccess = "true"))
-	UBoxComponent* StraightColBox1;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "StraightCollision", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* StraightCollision;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "StraightCollisionB", meta = (AllowPrivateAccess = "true"))
-	UBoxComponent* StraightColBox2;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CurvedTrackCollision", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* CurvedCollision;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CurvedTrackCollision")
-	TArray<UBoxComponent*> curvedTrackCollisionBoxes;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Switch")
+	bool isStraight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Switch")
+	bool debugOn;
+
+	void changePoints();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "InteractEventRef")
+	void Interact(); void Interact_Implementation() override;
 };
