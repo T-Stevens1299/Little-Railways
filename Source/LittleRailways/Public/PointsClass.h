@@ -53,6 +53,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Switch")
 	bool debugOn;
 
+	UFUNCTION(BlueprintCallable)
 	void changePoints();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "InteractEventRef")
