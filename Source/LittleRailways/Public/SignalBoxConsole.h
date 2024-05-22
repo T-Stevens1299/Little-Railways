@@ -43,6 +43,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PointsControlled")
 	TArray<APointsClass*> pointsToControl;
 	
+	UPROPERTY()
 	TArray<bool> pointStatus;
 
 protected:
@@ -52,5 +53,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Widget")
 	class USignalBoxControlsHUD* HUD;
+
 	APlayerController* PC;
 };

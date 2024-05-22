@@ -44,7 +44,11 @@ void ASignalBoxConsole::Interact_Implementation()
 
 void ASignalBoxConsole::changeSelectedPoint(int arrayIndex)
 {
-	pointsToControl[0]->changePoints();
+	if (pointsToControl.IsValidIndex(arrayIndex))
+	{
+		pointsToControl[arrayIndex]->changePoints();
+	}
+
 	setPointStatus();
 }
 
@@ -52,6 +56,9 @@ void ASignalBoxConsole::setPointStatus()
 {
 	for (int i = 0; i < pointsToControl.Num(); i++)
 	{
-		pointStatus[i] = pointsToControl[i]->isStraight;
+		if (pointsToControl.IsValidIndex(i) && pointStatus.IsValidIndex(i))
+		{
+			pointStatus[i] = pointsToControl[i]->isStraight;
+		}
 	}
 }
