@@ -40,6 +40,14 @@ void ASignalBoxConsole::Interact_Implementation()
 	HUD->setPointsOnMap();
 	HUD->AddToViewport();
 	PC->bShowMouseCursor = true;
+	PC->SetInputMode(FInputModeUIOnly());
+}
+
+void ASignalBoxConsole::closeHUD()
+{
+	PC->bShowMouseCursor = false;
+	PC->SetInputMode(FInputModeGameOnly());
+	HUD->RemoveFromViewport();
 }
 
 void ASignalBoxConsole::changeSelectedPoint(int arrayIndex)

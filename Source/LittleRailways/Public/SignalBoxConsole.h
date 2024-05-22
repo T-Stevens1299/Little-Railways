@@ -37,6 +37,8 @@ public:
 
 	void setPointStatus();
 
+	void closeHUD();
+
 	TArray<bool> getPointStatus() { return pointStatus; }
 
 	//Variables

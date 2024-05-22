@@ -14,7 +14,10 @@ USignalBoxControlsHUD::USignalBoxControlsHUD(const FObjectInitializer& ObjectIni
 
 void USignalBoxControlsHUD::NativeConstruct()
 {
-
+	if (CloseButton)
+	{
+		CloseButton->OnClicked.AddDynamic(this, &USignalBoxControlsHUD::closeWindow);
+	}
 }
 
 void USignalBoxControlsHUD::SetPtr(ASignalBoxConsole *SBptr)
@@ -30,4 +33,9 @@ void USignalBoxControlsHUD::setPointsOnMap()
 void USignalBoxControlsHUD::pointClicked(int arrayIndex)
 {
 	SBref->changeSelectedPoint(arrayIndex);
+}
+
+void USignalBoxControlsHUD::closeWindow()
+{
+	SBref->closeHUD();
 }

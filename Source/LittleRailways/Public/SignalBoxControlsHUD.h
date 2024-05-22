@@ -28,5 +28,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void pointClicked(int arrayIndex);
+
+	UFUNCTION()
+	void closeWindow();
+
+	//Binded Widgets
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* CloseButton;
 	
 };
