@@ -28,8 +28,7 @@ public:
 	UStaticMeshComponent* PassengerBody;
 
 	//Variables
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
-	FString targetDestination;
+	
 
 	//Functions
 

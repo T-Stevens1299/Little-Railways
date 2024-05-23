@@ -19,6 +19,16 @@ void UTrainControlsHUD::NativeConstruct()
 	{
 		AddCoal->OnClicked.AddDynamic(this, &UTrainControlsHUD::OnButtonClicked);
 	}
+
+	if (LoadPassengers)
+	{
+		AddCoal->OnClicked.AddDynamic(this, &UTrainControlsHUD::loadPassengersTrigger);
+	}
+
+	if (UnloadPassengers)
+	{
+		AddCoal->OnClicked.AddDynamic(this, &UTrainControlsHUD::unloadPassengersTrigger);
+	}
 }
 
 void UTrainControlsHUD::OnButtonClicked()
@@ -70,4 +80,14 @@ void UTrainControlsHUD::UpdateWaterLevel(float updatedWaterLevel)
 void UTrainControlsHUD::UpdateCoalLevel(float updatedCoalLevel)
 {
 	CoalLevel->SetPercent((updatedCoalLevel / totalCoalLevel));
+}
+
+void UTrainControlsHUD::loadPassengersTrigger()
+{
+
+}
+
+void UTrainControlsHUD::unloadPassengersTrigger()
+{
+
 }

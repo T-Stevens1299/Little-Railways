@@ -36,6 +36,7 @@ void AStationClass::BeginPlay()
 	upPlatformChecker->OnComponentBeginOverlap.AddDynamic(this, &AStationClass::upBeginOverlap);
 	downPlatformChecker->OnComponentBeginOverlap.AddDynamic(this, &AStationClass::downBeginOverlap);
 
+	//Setup Timers
 	GetWorldTimerManager().SetTimer(passengerSpawner, this, &AStationClass::spawnPassengers, 10.0f, true, 10.0f);
 }
 
@@ -48,14 +49,72 @@ void AStationClass::Tick(float DeltaTime)
 
 void AStationClass::upBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
+	loadPassengers(true);
 }
 
 void AStationClass::downBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
+	loadPassengers(false);
 }
 
+void AStationClass::loadPassengers(bool IsUp)
+{
+	TArray<AActor*> overlappingActors;
+	upPlatformCatchmentZone->GetOverlappingActors(overlappingActors);
+	for (int i = 0; i < overlappingActors.Num(); i++)
+	{
+		ACarriageClass* carriageToCheck = Cast<ACarriageClass>(overlappingActors[i]);
+		if (carriageToCheck)
+		{
+			for (int j = 0; j < carriageToCheck->passengerCapacity; j++)
+			{
+				if (!((carriageToCheck->currentPassengerCount + 1) > carriageToCheck->passengerCapacity))
+				{
+					if (IsUp)
+					{
+						if (!((upPassengerTotal - 1) < 0))
+						{
+							carriageToCheck->loadPassengers(selectDestination(IsUp));
+							upPassengerTotal--;
+						}
+					}
+					else 
+					{
+						if (!((downPassengerTotal - 1) < 0))
+						{
+							carriageToCheck->loadPassengers(selectDestination(IsUp));
+							downPassengerTotal--;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+FString AStationClass::selectDestination(bool isDown)
+{
+	int chosenIndex;
+	if (isDown)
+	{
+		chosenIndex = (rand() % downDestinations.Num());
+		if (upDestinations.IsValidIndex(chosenIndex))
+		{
+			return downDestinations[chosenIndex];
+		}
+	}
+	else
+	{
+		chosenIndex = (rand() % upDestinations.Num());
+		if (upDestinations.IsValidIndex(chosenIndex))
+		{
+			return upDestinations[chosenIndex];
+		}
+	}
+	return "";
+}
+
+//Deprecated - rewrite function
 void AStationClass::spawnPassengers()
 {
 	if (isUp)

@@ -48,6 +48,10 @@ public:
 
 	void UpdateCoalLevel(float updatedCoalLevel);
 
+	void loadPassengersTrigger();
+
+	void unloadPassengersTrigger();
+
 protected:
 
 	//UI Components
@@ -62,6 +66,12 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* AddCoal;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* UnloadPassengers;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* LoadPassengers;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UProgressBar* FireLevel;

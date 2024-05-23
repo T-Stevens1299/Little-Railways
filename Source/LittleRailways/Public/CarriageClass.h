@@ -53,13 +53,14 @@ public:
 
 	FString currentDestination;
 
-	TArray<APassengerClass*> PassengerActorsContained;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
+	TArray<FString> passengerDestinations;
 
 	class ALittleRailwaysGameMode* gmRef;
 
 
 	//Functions
-	void loadPassengers(APassengerClass passedPassenger);
+	void loadPassengers(FString destination);
 
 	void unloadPassengers();
 
