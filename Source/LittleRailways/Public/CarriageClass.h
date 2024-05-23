@@ -51,8 +51,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
 	int luxuryMultiplier;
 
-	FString currentDestination;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
 	TArray<FString> passengerDestinations;
 
@@ -62,9 +60,7 @@ public:
 	//Functions
 	void loadPassengers(FString destination);
 
-	void unloadPassengers();
-
-	void setDestination(FString curDest);
+	void emptyPassengers(FString currentDestination);
 
 	void addMoneyAndXP();
 

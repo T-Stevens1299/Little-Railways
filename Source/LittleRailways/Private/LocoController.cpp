@@ -12,6 +12,7 @@
 #include "LittleRailways/Regulator.h"
 #include "LittleRailways/BrakeLever.h"
 #include "LocomotiveTender.h"
+#include "StationClass.h"
 #include "GameFramework/Controller.h"
 #include <Kismet/GameplayStatics.h>
 #include "LittleRailways/LittleRailwaysCharacter.h"
@@ -319,6 +320,13 @@ void ALocoController::SetUILevels()
 	HUD->UpdateFireLevel(0.0f);
 	HUD->UpdateWaterLevel(TrainTenderComponent->waterCapacity);
 	HUD->UpdateCoalLevel(TrainTenderComponent->fuelCapacity);
+}
+
+void ALocoController::togglePassengerButtons(bool isUP, AStationClass* stationRef)
+{
+	isUp = isUP;
+	StationRef = stationRef;
+	HUD->ToggleButtons();
 }
 
 void ALocoController::FuelFire()

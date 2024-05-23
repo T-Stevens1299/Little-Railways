@@ -21,6 +21,7 @@ class AReverser;
 class ARegulator;
 class ABrakeLever;
 class ALocomotiveTender;
+class AStationClass;
 
 UCLASS()
 class LITTLERAILWAYS_API ALocoController : public APawn, public IBPI_Braking, public IBPI_Fueling
@@ -102,6 +103,13 @@ public:
 	TSubclassOf<ACharacter> CharacterToSpawn;
 
 	//Variables
+
+	//Station Variables
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
+	AStationClass* StationRef;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
+	bool isUp;
 	//Fuel variables
 	float curFuelLevel = 0;
 
@@ -167,6 +175,8 @@ public:
 	void SetUILevels();
 
 	void consumeFuelandWater();
+
+	void togglePassengerButtons(bool isUP, AStationClass* stationRef);
 
 	FTimerHandle MemberTimerHandle;
 

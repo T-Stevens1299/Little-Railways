@@ -29,6 +29,7 @@ void ALittleRailwaysGameMode::BeginPlay()
 
 void ALittleRailwaysGameMode::addXP_Implementation(int passedXP)
 {
+	UE_LOG(LogTemp, Warning, TEXT("XpAdded"));
 	currentXP = currentXP + passedXP;
 	HUD->changeXPAmount(currentXP);
 	checkLevelUp();
@@ -37,6 +38,7 @@ void ALittleRailwaysGameMode::addXP_Implementation(int passedXP)
 
 void ALittleRailwaysGameMode::addMoney_Implementation(int passedMoney)
 {
+	UE_LOG(LogTemp, Warning, TEXT("MoneyAdded"));
 	currentMoney = currentMoney + passedMoney;
 	HUD->changeMoneyAmount(currentMoney);
 }

@@ -34,7 +34,10 @@ void AStationClass::BeginPlay()
 	Super::BeginPlay();
 	
 	upPlatformChecker->OnComponentBeginOverlap.AddDynamic(this, &AStationClass::upBeginOverlap);
+	upPlatformChecker->OnComponentEndOverlap.AddDynamic(this, &AStationClass::upEndOverlap);
+
 	downPlatformChecker->OnComponentBeginOverlap.AddDynamic(this, &AStationClass::downBeginOverlap);
+	downPlatformChecker->OnComponentEndOverlap.AddDynamic(this, &AStationClass::downEndOverlap);
 
 	//Setup Timers
 	GetWorldTimerManager().SetTimer(passengerSpawner, this, &AStationClass::spawnPassengers, 10.0f, true, 10.0f);
@@ -49,16 +52,43 @@ void AStationClass::Tick(float DeltaTime)
 
 void AStationClass::upBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	loadPassengers(true);
+	ALocoController* locoRef = Cast<ALocoController>(OtherActor);
+	if (locoRef)
+	{
+		locoRef->togglePassengerButtons(true, this);
+	}
+}
+
+void AStationClass::upEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	ALocoController* locoRef = Cast<ALocoController>(OtherActor);
+	if (locoRef)
+	{
+		locoRef->togglePassengerButtons(true, this);
+	}
 }
 
 void AStationClass::downBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	loadPassengers(false);
+	ALocoController* locoRef = Cast<ALocoController>(OtherActor);
+	if (locoRef)
+	{
+		locoRef->togglePassengerButtons(false, this);
+	}
+}
+
+void AStationClass::downEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	ALocoController* locoRef = Cast<ALocoController>(OtherActor);
+	if (locoRef)
+	{
+		locoRef->togglePassengerButtons(false, this);
+	}
 }
 
 void AStationClass::loadPassengers(bool IsUp)
 {
+	UE_LOG(LogTemp, Warning, TEXT("LoadPassengers"));
 	TArray<AActor*> overlappingActors;
 	upPlatformCatchmentZone->GetOverlappingActors(overlappingActors);
 	for (int i = 0; i < overlappingActors.Num(); i++)
@@ -88,6 +118,21 @@ void AStationClass::loadPassengers(bool IsUp)
 					}
 				}
 			}
+		}
+	}
+}
+
+void AStationClass::unloadPassengers()
+{
+	UE_LOG(LogTemp, Warning, TEXT("UnloadPassengersTrigger"));
+	TArray<AActor*> overlappingActors;
+	upPlatformCatchmentZone->GetOverlappingActors(overlappingActors);
+	for (int i = 0; i < overlappingActors.Num(); i++)
+	{
+		ACarriageClass* carriageToCheck = Cast<ACarriageClass>(overlappingActors[i]);
+		if (carriageToCheck)
+		{
+			carriageToCheck->emptyPassengers(stationName);
 		}
 	}
 }

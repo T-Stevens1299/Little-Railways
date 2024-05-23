@@ -44,11 +44,6 @@ void ACarriageClass::Tick(float DeltaTime)
 
 }
 
-void ACarriageClass::setDestination(FString curDest)
-{
-	currentDestination = curDest;
-}
-
 void ACarriageClass::loadPassengers(FString destination)
 {
 	//Safety check to ensure the array does not exceed a certain size
@@ -56,16 +51,20 @@ void ACarriageClass::loadPassengers(FString destination)
 	passengerDestinations.Add(destination);
 }
 
-void ACarriageClass::unloadPassengers()
+void ACarriageClass::emptyPassengers(FString currentDestination)
 {
-	for (int i = 0; i < passengerDestinations.Num(); i++)
+	UE_LOG(LogTemp, Warning, TEXT("PassengersUnloaded"));
+	if (currentPassengerCount != 0)
 	{
-		if (passengerDestinations.IsValidIndex(i))
+		for (int i = passengerDestinations.Num(); i >= 0; i--)
 		{
-			if (passengerDestinations[i] == currentDestination)
+			if (passengerDestinations.IsValidIndex(i))
 			{
-				spawnPassengersOnPlatform(i);
-				addMoneyAndXP();
+				if (passengerDestinations[i] == currentDestination)
+				{
+					spawnPassengersOnPlatform(i);
+					addMoneyAndXP();
+				}
 			}
 		}
 	}
@@ -74,6 +73,7 @@ void ACarriageClass::unloadPassengers()
 void ACarriageClass::spawnPassengersOnPlatform(int passedIndex)
 {
 	passengerDestinations.RemoveAt(passedIndex);
+	currentPassengerCount--;
 	//Spawn Actor
 }
 

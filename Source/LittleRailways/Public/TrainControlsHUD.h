@@ -24,6 +24,12 @@ protected:
 	UFUNCTION()
 	void OnButtonClicked();
 
+	UFUNCTION()
+	void loadPassengersTrigger();
+
+	UFUNCTION()
+	void unloadPassengersTrigger();
+
 	virtual void NativeConstruct() override;
 
 public:
@@ -48,9 +54,7 @@ public:
 
 	void UpdateCoalLevel(float updatedCoalLevel);
 
-	void loadPassengersTrigger();
-
-	void unloadPassengersTrigger();
+	void ToggleButtons();
 
 protected:
 

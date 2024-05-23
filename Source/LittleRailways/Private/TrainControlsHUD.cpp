@@ -5,6 +5,7 @@
 #include "TrainControlsHUD.h"
 #include "Components/ProgressBar.h"
 #include "Components/Button.h"
+#include "StationClass.h"
 #include "LocoController.h"
 
 UTrainControlsHUD::UTrainControlsHUD(const FObjectInitializer& ObjectInitializer)
@@ -22,12 +23,12 @@ void UTrainControlsHUD::NativeConstruct()
 
 	if (LoadPassengers)
 	{
-		AddCoal->OnClicked.AddDynamic(this, &UTrainControlsHUD::loadPassengersTrigger);
+		LoadPassengers->OnClicked.AddDynamic(this, &UTrainControlsHUD::loadPassengersTrigger);
 	}
 
 	if (UnloadPassengers)
 	{
-		AddCoal->OnClicked.AddDynamic(this, &UTrainControlsHUD::unloadPassengersTrigger);
+		UnloadPassengers->OnClicked.AddDynamic(this, &UTrainControlsHUD::unloadPassengersTrigger);
 	}
 }
 
@@ -84,10 +85,25 @@ void UTrainControlsHUD::UpdateCoalLevel(float updatedCoalLevel)
 
 void UTrainControlsHUD::loadPassengersTrigger()
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("LoadTrigger"));
+	TrainRef->StationRef->loadPassengers(TrainRef->isUp);
 }
 
 void UTrainControlsHUD::unloadPassengersTrigger()
 {
+	TrainRef->StationRef->unloadPassengers();
+}
 
+void UTrainControlsHUD::ToggleButtons()
+{
+	if (LoadPassengers->GetIsEnabled())
+	{
+		LoadPassengers->SetIsEnabled(false);
+		UnloadPassengers->SetIsEnabled(false);
+	}
+	else
+	{
+		LoadPassengers->SetIsEnabled(true);
+		UnloadPassengers->SetIsEnabled(true);
+	}
 }
