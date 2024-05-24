@@ -63,7 +63,8 @@ ALocoController::ALocoController()
 	TenderMesh->SetupAttachment(LocoBody);
 
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
-	CameraArm->SetupAttachment(RootComponent);
+	CameraArm->SetupAttachment(LocoBody);
+	CameraArm->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f)); // Position the camera
 	CameraArm->TargetArmLength = 400.0f;	
 	CameraArm->bUsePawnControlRotation = true;
 
