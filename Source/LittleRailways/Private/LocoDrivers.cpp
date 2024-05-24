@@ -19,13 +19,11 @@ ALocoDrivers::ALocoDrivers()
 	LeftWheel2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponent2"));
 	LeftWheel2->SetupAttachment(FrameBody);
 
-
 	RightWheel1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponent3"));
 	RightWheel1->SetupAttachment(FrameBody);
 
 	RightWheel2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponent4"));
 	RightWheel2->SetupAttachment(FrameBody);
-
 }
 
 // Called when the game starts or when spawned
