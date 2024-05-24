@@ -22,6 +22,7 @@ class ARegulator;
 class ABrakeLever;
 class ALocomotiveTender;
 class AStationClass;
+class ALocoDrivers;
 
 UCLASS()
 class LITTLERAILWAYS_API ALocoController : public APawn, public IBPI_Braking, public IBPI_Fueling
@@ -62,7 +63,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* LocoBody;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* LeftWheel1;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
@@ -72,7 +73,7 @@ public:
 	UStaticMeshComponent* RightWheel1;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* RightWheel2;
+	UStaticMeshComponent* RightWheel2;*/
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* BrakeMesh;
@@ -86,6 +87,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* TenderMesh;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* DriverSet1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* DriverSet2;
+
 	/** Lever Components */
 	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
 	AReverser* ReverserComponent;
@@ -98,6 +105,12 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
 	ALocomotiveTender* TrainTenderComponent;
+
+	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
+	ALocoDrivers* DriverSet1Component;
+
+	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
+	ALocoDrivers* DriverSet2Component;
 
 	UPROPERTY(EditDefaultsOnly, Category = "ActorSpawn")
 	TSubclassOf<ACharacter> CharacterToSpawn;

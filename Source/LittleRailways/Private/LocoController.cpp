@@ -12,6 +12,7 @@
 #include "LittleRailways/Regulator.h"
 #include "LittleRailways/BrakeLever.h"
 #include "LocomotiveTender.h"
+#include "LocoDrivers.h"
 #include "StationClass.h"
 #include "GameFramework/Controller.h"
 #include <Kismet/GameplayStatics.h>
@@ -31,18 +32,23 @@ ALocoController::ALocoController()
 	LocoBody = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootComponent"));
 	LocoBody->SetupAttachment(GetRootComponent());
 
-	LeftWheel1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentA"));
+	/*LeftWheel1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentA"));
 	LeftWheel1->SetupAttachment(LocoBody);
 
 	LeftWheel2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentB"));
 	LeftWheel2->SetupAttachment(LocoBody);
 
-
 	RightWheel1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentC"));
 	RightWheel1->SetupAttachment(LocoBody);
 
 	RightWheel2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentD"));
-	RightWheel2->SetupAttachment(LocoBody);
+	RightWheel2->SetupAttachment(LocoBody);*/
+
+	DriverSet1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Driver1Component"));
+	DriverSet1->SetupAttachment(LocoBody);
+
+	DriverSet2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Driver2Component"));
+	DriverSet2->SetupAttachment(LocoBody);
 
 	BrakeMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("BrakeComponent"));
 	BrakeMesh->SetupAttachment(LocoBody);
@@ -81,10 +87,10 @@ void ALocoController::BeginPlay()
 	SetUILevels();
 
 	//Setting Locos Max Speed
-	LeftWheel1->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
-	LeftWheel2->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
-	RightWheel1->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
-	RightWheel2->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
+	//LeftWheel1->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
+	//LeftWheel2->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
+	//RightWheel1->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
+	//RightWheel2->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
 
 	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ALocoController::consumeFuelandWater, 10.0f, true, 10.0f);
 }
@@ -92,6 +98,18 @@ void ALocoController::BeginPlay()
 //Sets up the references for the child actor components
 void ALocoController::SetComponents()
 {
+	DriverSet1Component = Cast<ALocoDrivers>(DriverSet1->GetChildActor());
+	if (DriverSet1Component)
+	{
+		DriverSet1Component->SetTrainPtr(this);
+	}
+
+	DriverSet2Component = Cast<ALocoDrivers>(DriverSet2->GetChildActor());
+	if (DriverSet2Component)
+	{
+		DriverSet2Component->SetTrainPtr(this);
+	}
+
 	ReverserComponent = Cast<AReverser>(ReverserMesh->GetChildActor());
 	if (ReverserComponent)
 	{
@@ -150,13 +168,21 @@ void ALocoController::Tick(float DeltaTime)
 		{
 			if (!isReversing)
 			{
-				LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * TractiveTorque), 0.0f));
-				RightWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * TractiveTorque), 0.0f));
+				DriverSet1Component->ApplyTorque(passedTorqueMulti);
+				if (DriverSet2Component)
+				{
+					DriverSet2Component->ApplyTorque(passedTorqueMulti);
+				}
 			}
 			else
 			{
-				LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -TractiveTorque), 0.0f));
-				RightWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -TractiveTorque), 0.0f));
+				DriverSet1Component->ApplyTorque(-passedTorqueMulti);
+				if (DriverSet2Component)
+				{
+					DriverSet2Component->ApplyTorque(-passedTorqueMulti);
+				}
+				/*LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -TractiveTorque), 0.0f));
+				RightWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -TractiveTorque), 0.0f));*/
 			}
 		}
 	}
@@ -256,12 +282,11 @@ void ALocoController::ApplyTorque(int passedTorqueMultiplier)
 
 void ALocoController::ApplyBrakes(int passedBrakeVal)
 {
-	float brakeVal = passedBrakeVal;
-
-	LeftWheel1->SetAngularDamping(brakeVal);
-	LeftWheel2->SetAngularDamping(brakeVal);
-	RightWheel1->SetAngularDamping(brakeVal);
-	RightWheel2->SetAngularDamping(brakeVal);
+	DriverSet1Component->ApplyBreaks(passedBrakeVal);
+	if (DriverSet2Component)
+	{
+		DriverSet2Component->ApplyBreaks(passedBrakeVal);
+	}
 }
 
 

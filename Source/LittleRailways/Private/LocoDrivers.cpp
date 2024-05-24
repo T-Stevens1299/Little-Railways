@@ -48,6 +48,7 @@ void ALocoDrivers::ApplyTorque(int passedTorqueMultiplier)
 {
 	for (int i = 0; i < wheelsToDrive.Num(); i++)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Moving"));
 		wheelsToDrive[i]->AddTorqueInRadians(FVector(0.0f, (passedTorqueMultiplier * TractiveTorque), 0.0f));
 	}
 }
