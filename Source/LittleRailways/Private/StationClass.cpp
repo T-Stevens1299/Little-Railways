@@ -105,6 +105,7 @@ void AStationClass::loadPassengers(bool IsUp)
 						if (!((upPassengerTotal - 1) < 0))
 						{
 							carriageToCheck->loadPassengers(selectDestination(IsUp));
+							togglePassengerVisibility(upPassengerTotal - 1, IsUp);
 							upPassengerTotal--;
 						}
 					}
@@ -113,6 +114,7 @@ void AStationClass::loadPassengers(bool IsUp)
 						if (!((downPassengerTotal - 1) < 0))
 						{
 							carriageToCheck->loadPassengers(selectDestination(IsUp));
+							togglePassengerVisibility(downPassengerTotal - 1, IsUp);
 							downPassengerTotal--;
 						}
 					}
@@ -167,9 +169,8 @@ void AStationClass::spawnPassengers()
 		if (!((downPassengerTotal + 1) > downPassengerCapacity)) 
 		{
 			downPassengerTotal++;
-			FActorSpawnParameters SpawnParams;
-			downSpawnedPassengers.Add(GetWorld()->SpawnActor<APassengerClass>(spawnedActor, (GetActorLocation() + FVector(0.0f, 100.0f, 50.0f)), GetActorRotation(), SpawnParams));
 			isUp = false;
+			togglePassengerVisibility(downPassengerTotal - 1, isUp);
 		}
 	}
 	else
@@ -177,9 +178,41 @@ void AStationClass::spawnPassengers()
 		if (!((upPassengerTotal + 1) > upPassengerCapacity))
 		{
 			upPassengerTotal++;
-			FActorSpawnParameters SpawnParams;
-			upSpawnedPassengers.Add(GetWorld()->SpawnActor<APassengerClass>(spawnedActor, (GetActorLocation() + FVector(0.0f, -100.0f, 50.0f)), GetActorRotation(), SpawnParams));
 			isUp = true;
+			togglePassengerVisibility(upPassengerTotal - 1, isUp);
+		}
+	}
+}
+
+void AStationClass::togglePassengerVisibility(int passedIndex, bool direction)
+{
+	if(direction)
+	{
+		if (upSpawnedPassengers.IsValidIndex(passedIndex))
+		{
+			if (upSpawnedPassengers[passedIndex]->bHiddenInGame)
+			{
+				upSpawnedPassengers[passedIndex]->SetHiddenInGame(false);
+			}
+			else
+			{
+				upSpawnedPassengers[passedIndex]->SetHiddenInGame(true);
+			}
+		}
+	}
+	else
+	{
+		if (downSpawnedPassengers.IsValidIndex(passedIndex))
+		{
+			if (downSpawnedPassengers[passedIndex]->bHiddenInGame)
+			{
+				downSpawnedPassengers[passedIndex]->SetHiddenInGame(false);
+
+			}
+			else
+			{
+				downSpawnedPassengers[passedIndex]->SetHiddenInGame(true);
+			}
 		}
 	}
 }

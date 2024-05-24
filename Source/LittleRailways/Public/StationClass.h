@@ -44,10 +44,10 @@ public:
 
 	//Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
-	TArray<APassengerClass*> upSpawnedPassengers;
+	TArray<UChildActorComponent*> upSpawnedPassengers;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
-	TArray<APassengerClass*> downSpawnedPassengers;
+	TArray<UChildActorComponent*> downSpawnedPassengers;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
 	TArray<FString> upDestinations;
@@ -95,6 +95,8 @@ public:
 	void loadPassengers(bool IsUp);
 
 	void unloadPassengers();
+
+	void togglePassengerVisibility(int passedIndex, bool direction);
 
 	FString selectDestination(bool isDown);
 

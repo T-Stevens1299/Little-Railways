@@ -28,7 +28,7 @@ public:
 	UStaticMeshComponent* PassengerBody;
 
 	//Variables
-	
+	bool isHidden;
 
 	//Functions
 
