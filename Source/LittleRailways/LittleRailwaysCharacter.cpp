@@ -11,6 +11,7 @@
 #include "InputActionValue.h"
 #include <Kismet/GameplayStatics.h>
 #include "LocoController.h"
+#include "ShopHUD.h"
 #include "BPI_Interact.h"
 #include "BPI_StatsIncrease.h"
 #include "Engine/LocalPlayer.h"
@@ -52,6 +53,9 @@ void ALittleRailwaysCharacter::BeginPlay()
 
 	PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	gmRef = Cast<ALittleRailwaysGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	SHOP = CreateWidget<UShopHUD>(PC, Shopref);
+	SHOP->SetGMptr(gmRef);
 
 	// Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
@@ -102,6 +106,8 @@ void ALittleRailwaysCharacter::SetupPlayerInputComponent(UInputComponent* Player
 		
 		// HUD Toggling
 		EnhancedInputComponent->BindAction(HudAction, ETriggerEvent::Triggered, this, &ALittleRailwaysCharacter::toggleHUD);
+
+		EnhancedInputComponent->BindAction(ShopAction, ETriggerEvent::Triggered, this, &ALittleRailwaysCharacter::openShopMenu);
 	}
 	else
 	{
@@ -121,6 +127,14 @@ void ALittleRailwaysCharacter::BoardTrain(const FInputActionValue& Value)
 		gmRef->ToggleHUD();
 	}
 	PerformLineTrace();
+}
+
+void ALittleRailwaysCharacter::openShopMenu(const FInputActionValue& Value)
+{
+	SHOP->updateMoneyXP();
+	SHOP->AddToViewport();
+	PC->bShowMouseCursor = true;
+	PC->SetInputMode(FInputModeUIOnly());
 }
 
 void ALittleRailwaysCharacter::Interact(const FInputActionValue& Value)

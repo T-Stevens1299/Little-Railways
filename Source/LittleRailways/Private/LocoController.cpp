@@ -32,18 +32,6 @@ ALocoController::ALocoController()
 	LocoBody = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootComponent"));
 	LocoBody->SetupAttachment(GetRootComponent());
 
-	/*LeftWheel1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentA"));
-	LeftWheel1->SetupAttachment(LocoBody);
-
-	LeftWheel2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentB"));
-	LeftWheel2->SetupAttachment(LocoBody);
-
-	RightWheel1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentC"));
-	RightWheel1->SetupAttachment(LocoBody);
-
-	RightWheel2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentD"));
-	RightWheel2->SetupAttachment(LocoBody);*/
-
 	DriverSet1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Driver1Component"));
 	DriverSet1->SetupAttachment(LocoBody);
 
@@ -86,12 +74,6 @@ void ALocoController::BeginPlay()
 	HUD->SetTrainPtr(this);
 
 	SetUILevels();
-
-	//Setting Locos Max Speed
-	//LeftWheel1->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
-	//LeftWheel2->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
-	//RightWheel1->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
-	//RightWheel2->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
 
 	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ALocoController::consumeFuelandWater, 10.0f, true, 10.0f);
 }

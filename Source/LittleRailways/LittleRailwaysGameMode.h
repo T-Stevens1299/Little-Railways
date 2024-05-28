@@ -31,6 +31,10 @@ public:
 	void calculatePercentage();
 
 	void ToggleHUD();
+	
+	int GetCurMoney() { return currentMoney; }
+
+	int GetCurLevel() { return currentLevel; }
 
 	int currentXP;
 

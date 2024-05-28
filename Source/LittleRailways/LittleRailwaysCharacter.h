@@ -13,6 +13,7 @@ class USkeletalMeshComponent;
 class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
+class UShopHUD;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -50,6 +51,9 @@ class ALittleRailwaysCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* HudAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ShopAction;
 	
 public:
 	ALittleRailwaysCharacter();
@@ -95,6 +99,8 @@ protected:
 
 	void toggleHUD(const FInputActionValue& Value);
 
+	void openShopMenu(const FInputActionValue& Value);
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
@@ -104,6 +110,13 @@ protected:
 	APlayerController* PC;
 
 	ALittleRailwaysGameMode* gmRef;
+
+	/** Shop Widget */
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+	TSubclassOf<UUserWidget> Shopref;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Widget")
+	class UShopHUD* SHOP;
 
 public:
 	/** Returns Mesh1P subobject **/
