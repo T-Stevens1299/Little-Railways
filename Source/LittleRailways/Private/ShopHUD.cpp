@@ -21,6 +21,16 @@ void UShopHUD::NativeConstruct()
 	{
 		CloseButton->OnClicked.AddDynamic(this, &UShopHUD::closeShopWindow);
 	}
+
+	if (NextButton)
+	{
+		NextButton->OnClicked.AddDynamic(this, &UShopHUD::nextAsset);
+	}
+
+	if (PreviousButton)
+	{
+		PreviousButton->OnClicked.AddDynamic(this, &UShopHUD::previousAsset);
+	}
 }
 
 void UShopHUD::SetGMptr(ALittleRailwaysGameMode* GMptr)
@@ -28,6 +38,7 @@ void UShopHUD::SetGMptr(ALittleRailwaysGameMode* GMptr)
 	GMref = GMptr;
 	PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	//setupSpawnTrackArray();
+	setShopScreen(currentRowIndex);
 }
 
 void UShopHUD::updateMoneyXP()
@@ -41,6 +52,42 @@ void UShopHUD::closeShopWindow()
 	PC->bShowMouseCursor = false;
 	PC->SetInputMode(FInputModeGameOnly());
 	this->RemoveFromViewport();
+}
+
+void UShopHUD::setShopScreen(int rowToFind)
+{
+	FName rowName = FName(*(FString::FromInt(rowToFind)));
+	currentRow = dataTableRef.DataTable->FindRow<FShopData>(rowName, "");
+	AssetName->SetText(currentRow->AssetName);
+	AssetFunds->SetText(FText::FromString(FString::FromInt(currentRow->requiredFunds)));
+	AssetLevel->SetText(FText::FromString(FString::FromInt(currentRow->requiredLevel)));
+	UE_LOG(LogTemp, Warning, TEXT("RowChanged"));
+}
+
+void UShopHUD::nextAsset()
+{
+	if ((currentRowIndex + 1) > totalRows)
+	{
+		currentRowIndex = 1;
+	}
+	else
+	{
+		currentRowIndex++;
+	}
+	setShopScreen(currentRowIndex);
+}
+
+void UShopHUD::previousAsset()
+{
+	if ((currentRowIndex - 1) < 1)
+	{
+		currentRowIndex = totalRows;
+	}
+	else
+	{
+		currentRowIndex--;
+	}
+	setShopScreen(currentRowIndex);
 }
 
 void UShopHUD::setupSpawnTrackArray()

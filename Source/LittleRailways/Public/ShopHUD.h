@@ -12,52 +12,6 @@
 #include "ShopHUD.generated.h"
 
 class ASpawningTrack;
-/**
- * 
- */
-UCLASS()
-class LITTLERAILWAYS_API UShopHUD : public UUserWidget
-{
-	GENERATED_BODY()
-public:
-	//Functions
-	UShopHUD(const FObjectInitializer& ObjectInitializer);
-
-	virtual void NativeConstruct() override;
-
-	void SetGMptr(ALittleRailwaysGameMode* GMptr);
-
-	void updateMoneyXP();
-
-	UFUNCTION()
-	void closeShopWindow();
-
-	void setupSpawnTrackArray();
-
-	UFUNCTION(BlueprintCallable)
-	bool spawnBoughtItem(int passedIndex);
-
-	UFUNCTION(BlueprintCallable)
-	void purchasingCheck(int requiredFunds, int requiredLevel);
-
-	//Variables
-	ALittleRailwaysGameMode* GMref;
-
-	APlayerController* PC;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "spawnTracks")
-	TArray<ASpawningTrack*> tracksToSpawnObjects;
-
-	//UI Components
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UButton* CloseButton;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* CurrentFunds;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* CurentLevel;
-};
 
 USTRUCT(BlueprintType)
 struct FShopData : public FTableRowBase
@@ -79,4 +33,89 @@ struct FShopData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSoftClassPtr<AActor> actorToSpawn;
 
+};
+
+UCLASS()
+class LITTLERAILWAYS_API UShopHUD : public UUserWidget
+{
+	GENERATED_BODY()
+public:
+	//Functions
+	UShopHUD(const FObjectInitializer& ObjectInitializer);
+
+	virtual void NativeConstruct() override;
+
+	void SetGMptr(ALittleRailwaysGameMode* GMptr);
+
+	void updateMoneyXP();
+
+	void setShopScreen(int rowToFind);
+
+	UFUNCTION()
+	void nextAsset();
+
+	UFUNCTION()
+	void previousAsset();
+
+	UFUNCTION()
+	void closeShopWindow();
+
+	void setupSpawnTrackArray();
+
+	UFUNCTION(BlueprintCallable)
+	bool spawnBoughtItem(int passedIndex);
+
+	UFUNCTION(BlueprintCallable)
+	void purchasingCheck(int requiredFunds, int requiredLevel);
+
+	//Variables
+	ALittleRailwaysGameMode* GMref;
+
+	APlayerController* PC;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FDataTableRowHandle dataTableRef;
+
+	FShopData* currentRow;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int totalRows;
+
+	int currentRowIndex = 3;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "spawnTracks")
+	TArray<ASpawningTrack*> tracksToSpawnObjects;
+
+	//UI Components
+	//Buttons
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* CloseButton;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* NextButton;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* PreviousButton;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* BuyButton;
+
+	//Text
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* CurrentFunds;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* CurentLevel;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* AssetName;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* AssetFunds;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* AssetLevel;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* History;
 };
