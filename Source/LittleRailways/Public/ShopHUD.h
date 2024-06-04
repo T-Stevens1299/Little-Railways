@@ -1,4 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Stevens Studios, all rights reserved
+// Written by Thomas Stevens
 
 #pragma once
 
@@ -31,7 +32,10 @@ public:
 	void setupSpawnTrackArray();
 
 	UFUNCTION(BlueprintCallable)
-	void spawnBoughtItem();
+	bool spawnBoughtItem(int passedIndex);
+
+	UFUNCTION(BlueprintCallable)
+	void purchasingCheck();
 
 	//Variables
 	ALittleRailwaysGameMode* GMref;

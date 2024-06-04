@@ -1,4 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Stevens Studios, all rights reserved
+// Written by Thomas Stevens
 
 
 #include "SpawningTrack.h"
@@ -47,6 +48,7 @@ bool ASpawningTrack::checkObstruction()
 	}
 	else
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Not Clear"));
 		return false;
 	}
 }

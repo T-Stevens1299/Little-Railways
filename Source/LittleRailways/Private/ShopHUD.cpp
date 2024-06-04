@@ -1,4 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Stevens Studios, all rights reserved
+// Written by Thomas Stevens
 
 
 #include "ShopHUD.h"
@@ -44,39 +45,45 @@ void UShopHUD::closeShopWindow()
 
 void UShopHUD::setupSpawnTrackArray()
 {
-	//TArray<AActor*> foundActors;
-	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawningTrack::StaticClass(), foundActors);
-
-	//for (int i = 0; foundActors.Num(); i++)
-	//{
-	//	if (foundActors.IsValidIndex(i))
-	//	{
-	//		/*tracksToSpawnObjects.Add(Cast<ASpawningTrack>(foundActors[i]));*/
-	//		UE_LOG(LogTemp, Warning, TEXT("ObjectAdded"));
-	//	}
-	//}
-	//UE_LOG(LogTemp, Warning, TEXT("TrackArrayPopulated"));
+	//Handled in blueprint
 }
 
-void UShopHUD::spawnBoughtItem()
+void UShopHUD::purchasingCheck()
 {
 	bool canSpawn = false;
 
-	for (int i = 0; tracksToSpawnObjects.Num(); i++)
+	for (int i = 0; i < tracksToSpawnObjects.Num(); i++)
 	{
-		if (tracksToSpawnObjects.IsValidIndex(i))
+		canSpawn = spawnBoughtItem(i);
+		if (canSpawn)
 		{
-			canSpawn = tracksToSpawnObjects[i]->checkObstruction();
-			if (canSpawn)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("SpawnedObject"));
-				break;
-			}
+			break;
 		}
 	}
 
 	if (!canSpawn)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CannotSpawn"));
+		UE_LOG(LogTemp, Warning, TEXT("Area not clear cannot purchase Item"));
 	}
+}
+
+bool UShopHUD::spawnBoughtItem(int passedIndex)
+{
+		bool spawnClear = false;
+
+		if (tracksToSpawnObjects.IsValidIndex(passedIndex))
+		{
+			spawnClear = tracksToSpawnObjects[passedIndex]->checkObstruction();
+		}
+
+		if (spawnClear == true)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("SpawnedObject"));
+			return spawnClear;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("CannotSpawn"));
+			return spawnClear;
+		}
 }
