@@ -28,6 +28,15 @@ struct FShopData : public FTableRowBase
 	int requiredFunds;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FText buildDate;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FText wheelArrangement;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FText tractiveEffort;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSoftObjectPtr<UStaticMesh> previewMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -118,4 +127,13 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* History;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* BuildDate;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* WheelArrangement;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* TractiveEffort;
 };

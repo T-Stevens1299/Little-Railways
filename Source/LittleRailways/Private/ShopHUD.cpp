@@ -58,9 +58,14 @@ void UShopHUD::setShopScreen(int rowToFind)
 {
 	FName rowName = FName(*(FString::FromInt(rowToFind)));
 	currentRow = dataTableRef.DataTable->FindRow<FShopData>(rowName, "");
+
 	AssetName->SetText(currentRow->AssetName);
 	AssetFunds->SetText(FText::FromString(FString::FromInt(currentRow->requiredFunds)));
 	AssetLevel->SetText(FText::FromString(FString::FromInt(currentRow->requiredLevel)));
+	BuildDate->SetText(currentRow->buildDate);
+	WheelArrangement->SetText(currentRow->wheelArrangement);
+	TractiveEffort->SetText(currentRow->tractiveEffort);
+
 	UE_LOG(LogTemp, Warning, TEXT("RowChanged"));
 }
 
