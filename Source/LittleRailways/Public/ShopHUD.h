@@ -4,6 +4,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "Engine/DataTable.h"
+
 #include "Blueprint/UserWidget.h"
 #include "LittleRailways/LittleRailwaysGameMode.h"
 #include "ShopHUD.generated.h"
@@ -54,4 +57,26 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* CurentLevel;
+};
+
+USTRUCT(BlueprintType)
+struct FShopData : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FText AssetName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int requiredLevel;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int requiredFunds;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSoftObjectPtr<UStaticMesh> previewMesh;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSoftClassPtr<AActor> actorToSpawn;
+
 };
