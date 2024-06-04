@@ -35,7 +35,7 @@ public:
 	bool spawnBoughtItem(int passedIndex);
 
 	UFUNCTION(BlueprintCallable)
-	void purchasingCheck();
+	void purchasingCheck(int requiredFunds, int requiredLevel);
 
 	//Variables
 	ALittleRailwaysGameMode* GMref;

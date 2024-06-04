@@ -46,24 +46,39 @@ void UShopHUD::closeShopWindow()
 void UShopHUD::setupSpawnTrackArray()
 {
 	//Handled in blueprint
+	
 }
 
-void UShopHUD::purchasingCheck()
+void UShopHUD::purchasingCheck(int requiredFunds, int requiredLevel)
 {
 	bool canSpawn = false;
 
-	for (int i = 0; i < tracksToSpawnObjects.Num(); i++)
+	if (requiredLevel <= GMref->GetCurLevel())
 	{
-		canSpawn = spawnBoughtItem(i);
-		if (canSpawn)
+		if (requiredFunds <= GMref->GetCurMoney())
 		{
-			break;
+			for (int i = 0; i < tracksToSpawnObjects.Num(); i++)
+			{
+				canSpawn = spawnBoughtItem(i);
+				if (canSpawn)
+				{
+					break;
+				}
+			}
+
+			if (!canSpawn)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Area not clear cannot purchase Item"));
+			}
+		}
+		else 
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Lacking Funds"));
 		}
 	}
-
-	if (!canSpawn)
+	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Area not clear cannot purchase Item"));
+		UE_LOG(LogTemp, Warning, TEXT("Not high enough level"));
 	}
 }
 
