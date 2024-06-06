@@ -37,9 +37,6 @@ struct FShopData : public FTableRowBase
 	FText tractiveEffort;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSoftObjectPtr<UStaticMesh> previewMesh;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<AActor> actorToSpawn;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
