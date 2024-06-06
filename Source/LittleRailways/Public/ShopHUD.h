@@ -42,9 +42,6 @@ struct FShopData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<AActor> actorToSpawn;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	bool isLoco;
-
 };
 
 UCLASS()
@@ -144,10 +141,4 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* TractiveEffort;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* WheelsCapacity;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* TEgoodstype;
 };

@@ -74,17 +74,6 @@ void UShopHUD::setShopScreen(int rowToFind)
 	requiredFunds = currentRow->requiredFunds;
 	requiredLevel = currentRow->requiredLevel;
 
-	if (currentRow->isLoco)
-	{
-		WheelsCapacity->SetText(FText::FromString("Wheel Arrangement"));
-		TEgoodstype->SetText(FText::FromString("Tractive Effort"));
-	}
-	else
-	{
-		WheelsCapacity->SetText(FText::FromString("Goods Capacity"));
-		TEgoodstype->SetText(FText::FromString("Goods Type"));
-	}
-
 	UE_LOG(LogTemp, Warning, TEXT("RowChanged"));
 }
 
