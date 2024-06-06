@@ -95,7 +95,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int totalRows;
 
-	int currentRowIndex = 3;
+	int currentRowIndex = 1;
 
 	int requiredFunds;
 	int requiredLevel;
