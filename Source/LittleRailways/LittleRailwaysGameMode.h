@@ -38,9 +38,9 @@ public:
 
 	int currentXP;
 
-	int currentMoney = 5000;
+	int currentMoney = 2500;
 
-	int currentLevel = 5;
+	int currentLevel = 1;
 
 	bool HUDon = false;
 
