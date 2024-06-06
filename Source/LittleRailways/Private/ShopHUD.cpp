@@ -31,11 +31,6 @@ void UShopHUD::NativeConstruct()
 	{
 		PreviousButton->OnClicked.AddDynamic(this, &UShopHUD::previousAsset);
 	}
-
-	if (BuyButton)
-	{
-		BuyButton->OnClicked.AddDynamic(this, &UShopHUD::purchasingCheck);
-	}
 }
 
 void UShopHUD::SetGMptr(ALittleRailwaysGameMode* GMptr)
@@ -70,9 +65,6 @@ void UShopHUD::setShopScreen(int rowToFind)
 	BuildDate->SetText(currentRow->buildDate);
 	WheelArrangement->SetText(currentRow->wheelArrangement);
 	TractiveEffort->SetText(currentRow->tractiveEffort);
-
-	requiredFunds = currentRow->requiredFunds;
-	requiredLevel = currentRow->requiredLevel;
 
 	UE_LOG(LogTemp, Warning, TEXT("RowChanged"));
 }
@@ -109,7 +101,7 @@ void UShopHUD::setupSpawnTrackArray()
 	
 }
 
-void UShopHUD::purchasingCheck()
+void UShopHUD::purchasingCheck(int requiredFunds, int requiredLevel)
 {
 	bool canSpawn = false;
 
@@ -119,17 +111,16 @@ void UShopHUD::purchasingCheck()
 		{
 			for (int i = 0; i < tracksToSpawnObjects.Num(); i++)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Loop"));
-				canSpawn = trackCheck(i);
+				canSpawn = spawnBoughtItem(i);
 				if (canSpawn)
 				{
-					spawnBoughtItem(i);
 					break;
 				}
-				else
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Area not clear cannot purchase Item"));
-				}
+			}
+
+			if (!canSpawn)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Area not clear cannot purchase Item"));
 			}
 		}
 		else 
@@ -143,35 +134,23 @@ void UShopHUD::purchasingCheck()
 	}
 }
 
-bool UShopHUD::trackCheck(int passedIndex)
+bool UShopHUD::spawnBoughtItem(int passedIndex)
 {
-		bool spawnClear;
+		bool spawnClear = false;
 
 		if (tracksToSpawnObjects.IsValidIndex(passedIndex))
 		{
 			spawnClear = tracksToSpawnObjects[passedIndex]->checkObstruction();
+		}
 
-			if (spawnClear == true)
-			{
-				return spawnClear;
-			}
-			else
-			{
-				return spawnClear;
-			}
+		if (spawnClear == true)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("SpawnedObject"));
+			return spawnClear;
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Error"));
-			spawnClear = false;
+			UE_LOG(LogTemp, Warning, TEXT("CannotSpawn"));
 			return spawnClear;
 		}
-}
-
-void UShopHUD::spawnBoughtItem(int passedIndex)
-{
-	GMref->addMoney_Implementation(-requiredFunds);
-	CurrentFunds->SetText(FText::FromString(FString::FromInt(GMref->GetCurMoney())));
-	tracksToSpawnObjects[passedIndex]->spawnPurchasedItem(currentRow->actorToSpawn);
-	UE_LOG(LogTemp, Warning, TEXT("SpawnedObject"));
 }

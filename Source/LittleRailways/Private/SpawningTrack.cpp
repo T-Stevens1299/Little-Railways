@@ -52,9 +52,3 @@ bool ASpawningTrack::checkObstruction()
 		return false;
 	}
 }
-
-void ASpawningTrack::spawnPurchasedItem(TSubclassOf<AActor> itemToSpawn)
-{
-	FActorSpawnParameters SpawnParams;
-	GetWorld()->SpawnActor<AActor>(itemToSpawn, (GetActorLocation() + FVector(0.0f, 0.0f, 200.0f)), GetActorRotation(), SpawnParams);
-}

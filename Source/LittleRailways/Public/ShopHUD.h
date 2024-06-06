@@ -40,7 +40,7 @@ struct FShopData : public FTableRowBase
 	TSoftObjectPtr<UStaticMesh> previewMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<AActor> actorToSpawn;
+	TSoftClassPtr<AActor> actorToSpawn;
 
 };
 
@@ -72,12 +72,10 @@ public:
 	void setupSpawnTrackArray();
 
 	UFUNCTION(BlueprintCallable)
-	bool trackCheck(int passedIndex);
-
-	void spawnBoughtItem(int passedIndex);
+	bool spawnBoughtItem(int passedIndex);
 
 	UFUNCTION(BlueprintCallable)
-	void purchasingCheck();
+	void purchasingCheck(int requiredFunds, int requiredLevel);
 
 	//Variables
 	ALittleRailwaysGameMode* GMref;
@@ -93,9 +91,6 @@ public:
 	int totalRows;
 
 	int currentRowIndex = 3;
-
-	int requiredFunds;
-	int requiredLevel;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "spawnTracks")
 	TArray<ASpawningTrack*> tracksToSpawnObjects;

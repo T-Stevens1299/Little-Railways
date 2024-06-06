@@ -40,6 +40,4 @@ public:
 
 	//Functions
 	bool checkObstruction();
-
-	void spawnPurchasedItem(TSubclassOf<AActor> itemToSpawn);
 };
