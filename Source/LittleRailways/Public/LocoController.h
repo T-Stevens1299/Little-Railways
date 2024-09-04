@@ -93,6 +93,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* DriverSet2;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* Coupling1;
+
 	/** Lever Components */
 	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
 	AReverser* ReverserComponent;
