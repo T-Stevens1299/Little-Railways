@@ -41,6 +41,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Carriage", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* RightWheel2;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* Coupling1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* Coupling2;
+
 	//Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
 	int passengerCapacity;

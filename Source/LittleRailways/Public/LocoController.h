@@ -63,18 +63,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* LocoBody;
 
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* LeftWheel1;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* LeftWheel2;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* RightWheel1;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* RightWheel2;*/
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* BrakeMesh;
 
@@ -92,6 +80,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* DriverSet2;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* Coupling1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* Coupling2;
 
 	/** Lever Components */
 	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")

@@ -40,6 +40,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* RightWheel2;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* Coupling;
+
 	//Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TractionVariables")
 	float TractiveTorque;

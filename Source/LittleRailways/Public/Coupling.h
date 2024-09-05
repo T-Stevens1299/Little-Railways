@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "BPI_Interact.h"
+#include "Components/BoxComponent.h"
 #include "Coupling.generated.h"
 
 UCLASS()
@@ -36,9 +37,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CouplingParts", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* CouplingRod;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CouplingParts", meta = (AllowPrivateAccess = "true"))
+	UBoxComponent* OverlapChecker;
+
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "InteractEventRef")
 	void Interact(); void Interact_Implementation() override;
 
+	UFUNCTION(BlueprintCallable)
 	void MoveCoupling();
 
 	bool isCoupled;

@@ -38,6 +38,12 @@ ALocoController::ALocoController()
 	DriverSet2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Driver2Component"));
 	DriverSet2->SetupAttachment(LocoBody);
 
+	Coupling1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Coupling1Component"));
+	Coupling1->SetupAttachment(LocoBody);
+
+	Coupling2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Coupling2Component"));
+	Coupling2->SetupAttachment(LocoBody);
+
 	BrakeMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("BrakeComponent"));
 	BrakeMesh->SetupAttachment(LocoBody);
 

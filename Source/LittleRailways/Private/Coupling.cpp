@@ -20,6 +20,9 @@ ACoupling::ACoupling()
 
 	CouplingRod = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CouplingRodComponent"));
 	CouplingRod->SetupAttachment(CouplingBar);
+
+	OverlapChecker = CreateDefaultSubobject<UBoxComponent>(TEXT("OverlapComponent"));
+	OverlapChecker->SetupAttachment(CouplingHolder);
 }
 
 // Called when the game starts or when spawned

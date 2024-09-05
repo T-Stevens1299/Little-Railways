@@ -10,7 +10,7 @@
 // Sets default values
 ACarriageClass::ACarriageClass()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	CarriageBody = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootComponent"));
@@ -27,6 +27,12 @@ ACarriageClass::ACarriageClass()
 
 	RightWheel2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentD"));
 	RightWheel2->SetupAttachment(CarriageBody);
+
+	Coupling1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Coupling1Component"));
+	Coupling1->SetupAttachment(CarriageBody);
+
+	Coupling2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Coupling2Component"));
+	Coupling2->SetupAttachment(CarriageBody);
 }
 
 // Called when the game starts or when spawned
