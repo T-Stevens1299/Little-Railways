@@ -16,9 +16,6 @@ ACarriageClass::ACarriageClass()
 	CarriageBody = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootComponent"));
 	CarriageBody->SetupAttachment(GetRootComponent());
 
-	Coupling1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Coupling1Component"));
-	Coupling1->SetupAttachment(CarriageBody);
-
 	LeftWheel1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentA"));
 	LeftWheel1->SetupAttachment(CarriageBody);
 

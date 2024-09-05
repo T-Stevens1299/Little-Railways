@@ -30,9 +30,6 @@ public:
 	UStaticMeshComponent* CarriageBody;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Carriage", meta = (AllowPrivateAccess = "true"))
-	UChildActorComponent* Coupling1;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Carriage", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* LeftWheel1;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Carriage", meta = (AllowPrivateAccess = "true"))
