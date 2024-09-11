@@ -27,6 +27,9 @@ ALocoDrivers::ALocoDrivers()
 
 	Coupling = CreateDefaultSubobject<UChildActorComponent>(TEXT("CouplingComponent"));
 	Coupling->SetupAttachment(FrameBody);
+
+	Coupling2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("CouplingComponent2"));
+	Coupling2->SetupAttachment(FrameBody);
 }
 
 // Called when the game starts or when spawned

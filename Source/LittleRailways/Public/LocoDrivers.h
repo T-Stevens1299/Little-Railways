@@ -43,6 +43,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* Coupling;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* Coupling2;
+
 	//Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TractionVariables")
 	float TractiveTorque;
