@@ -157,7 +157,10 @@ void ALocoController::Tick(float DeltaTime)
 		{
 			if (!isReversing)
 			{
-				DriverSet1Component->ApplyTorque(passedTorqueMulti);
+				if (DriverSet1Component)
+				{
+					DriverSet1Component->ApplyTorque(passedTorqueMulti);
+				}
 				if (DriverSet2Component)
 				{
 					DriverSet2Component->ApplyTorque(passedTorqueMulti);
@@ -165,13 +168,14 @@ void ALocoController::Tick(float DeltaTime)
 			}
 			else
 			{
-				DriverSet1Component->ApplyTorque(-passedTorqueMulti);
+				if (DriverSet1Component)
+				{
+					DriverSet1Component->ApplyTorque(-passedTorqueMulti);
+				}
 				if (DriverSet2Component)
 				{
 					DriverSet2Component->ApplyTorque(-passedTorqueMulti);
 				}
-				/*LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -TractiveTorque), 0.0f));
-				RightWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -TractiveTorque), 0.0f));*/
 			}
 		}
 	}

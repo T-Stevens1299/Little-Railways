@@ -24,6 +24,9 @@ ALocomotiveTender::ALocomotiveTender()
 	RightWheel2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentD"));
 	RightWheel2->SetupAttachment(TenderBody);
 
+	Coupling = CreateDefaultSubobject<UChildActorComponent>(TEXT("CouplingComponent"));
+	Coupling->SetupAttachment(TenderBody);
+
 }
 
 // Called when the game starts or when spawned

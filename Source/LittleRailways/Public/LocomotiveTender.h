@@ -49,6 +49,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tender", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* RightWheel2;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tender", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* Coupling;
+
 	//Fuel and water values
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fuel")
