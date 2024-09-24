@@ -25,6 +25,12 @@ ALocoDrivers::ALocoDrivers()
 	RightWheel2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponent4"));
 	RightWheel2->SetupAttachment(FrameBody);
 
+	ConRod1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ConRodComponent1"));
+	ConRod1->SetupAttachment(FrameBody);
+
+	ConRod2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ConRodComponent2"));
+	ConRod2->SetupAttachment(FrameBody);
+
 	Coupling = CreateDefaultSubobject<UChildActorComponent>(TEXT("CouplingComponent"));
 	Coupling->SetupAttachment(FrameBody);
 

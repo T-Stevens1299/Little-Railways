@@ -41,6 +41,12 @@ public:
 	UStaticMeshComponent* RightWheel2;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* ConRod1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* ConRod2;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* Coupling;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
