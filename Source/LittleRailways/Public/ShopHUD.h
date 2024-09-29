@@ -13,36 +13,36 @@
 
 class ASpawningTrack;
 
-USTRUCT(BlueprintType)
-struct FShopData : public FTableRowBase
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FText AssetName;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int requiredLevel;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int requiredFunds;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FText buildDate;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FText wheelArrangement;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FText tractiveEffort;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<AActor> actorToSpawn;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	bool isLoco;
-
-};
+//USTRUCT(BlueprintType)
+//struct FShopData : public FTableRowBase
+//{
+//	GENERATED_BODY()
+//
+//	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+//	FText AssetName;
+//
+//	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+//	int requiredLevel;
+//
+//	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+//	int requiredFunds;
+//
+//	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+//	FText buildDate;
+//
+//	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+//	FText wheelArrangement;
+//
+//	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+//	FText tractiveEffort;
+//
+//	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+//	TSubclassOf<AActor> actorToSpawn;
+//
+//	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+//	bool isLoco;
+//
+//};
 
 UCLASS()
 class LITTLERAILWAYS_API UShopHUD : public UUserWidget
@@ -58,6 +58,7 @@ public:
 
 	void updateMoneyXP();
 
+	UFUNCTION(BlueprintImplementableEvent)
 	void setShopScreen(int rowToFind);
 
 	UFUNCTION()
@@ -87,7 +88,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FDataTableRowHandle dataTableRef;
 
-	FShopData* currentRow;
+	//FShopData* currentRow;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int totalRows;
@@ -96,6 +97,9 @@ public:
 
 	int requiredFunds;
 	int requiredLevel;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TSubclassOf<AActor> actorToSpawn;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "spawnTracks")
 	TArray<ASpawningTrack*> tracksToSpawnObjects;
@@ -121,30 +125,30 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* CurentLevel;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	/*UPROPERTY(BlueprintReadWrite)
 	class UTextBlock* AssetName;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite)
 	class UTextBlock* AssetFunds;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite)
 	class UTextBlock* AssetLevel;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite)
 	class UTextBlock* History;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite)
 	class UTextBlock* BuildDate;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite)
 	class UTextBlock* WheelArrangement;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite)
 	class UTextBlock* TractiveEffort;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite)
 	class UTextBlock* WheelsCapacity;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* TEgoodstype;
+	UPROPERTY(BlueprintReadWrite)
+	class UTextBlock* TEgoodstype;*/
 };

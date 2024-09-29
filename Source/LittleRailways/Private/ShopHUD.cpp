@@ -59,34 +59,34 @@ void UShopHUD::closeShopWindow()
 	this->RemoveFromViewport();
 }
 
-void UShopHUD::setShopScreen(int rowToFind)
-{
-	FName rowName = FName(*(FString::FromInt(rowToFind)));
-	currentRow = dataTableRef.DataTable->FindRow<FShopData>(rowName, "");
+//void UShopHUD::setShopScreen(int rowToFind)
+//{
+	//FName rowName = FName(*(FString::FromInt(rowToFind)));
+	//currentRow = dataTableRef.DataTable->FindRow<FShopData>(rowName, "");
 
-	AssetName->SetText(currentRow->AssetName);
-	AssetFunds->SetText(FText::FromString(FString::FromInt(currentRow->requiredFunds)));
-	AssetLevel->SetText(FText::FromString(FString::FromInt(currentRow->requiredLevel)));
-	BuildDate->SetText(currentRow->buildDate);
-	WheelArrangement->SetText(currentRow->wheelArrangement);
-	TractiveEffort->SetText(currentRow->tractiveEffort);
+	//AssetName->SetText(currentRow->AssetName);
+	//AssetFunds->SetText(FText::FromString(FString::FromInt(currentRow->requiredFunds)));
+	//AssetLevel->SetText(FText::FromString(FString::FromInt(currentRow->requiredLevel)));
+	//BuildDate->SetText(currentRow->buildDate);
+	//WheelArrangement->SetText(currentRow->wheelArrangement);
+	//TractiveEffort->SetText(currentRow->tractiveEffort);
 
-	requiredFunds = currentRow->requiredFunds;
-	requiredLevel = currentRow->requiredLevel;
+	//requiredFunds = currentRow->requiredFunds;
+	//requiredLevel = currentRow->requiredLevel;
 
-	if (currentRow->isLoco)
-	{
-		WheelsCapacity->SetText(FText::FromString("Wheel Arrangement"));
-		TEgoodstype->SetText(FText::FromString("Tractive Effort"));
-	}
-	else
-	{
-		WheelsCapacity->SetText(FText::FromString("Goods Capacity"));
-		TEgoodstype->SetText(FText::FromString("Goods Type"));
-	}
+	//if (currentRow->isLoco)
+	//{
+	//	WheelsCapacity->SetText(FText::FromString("Wheel Arrangement"));
+	//	TEgoodstype->SetText(FText::FromString("Tractive Effort"));
+	//}
+	//else
+	//{
+	//	WheelsCapacity->SetText(FText::FromString("Goods Capacity"));
+	//	TEgoodstype->SetText(FText::FromString("Goods Type"));
+	//}
 
-	UE_LOG(LogTemp, Warning, TEXT("RowChanged"));
-}
+	//UE_LOG(LogTemp, Warning, TEXT("RowChanged"));
+//}
 
 void UShopHUD::nextAsset()
 {
@@ -183,6 +183,6 @@ void UShopHUD::spawnBoughtItem(int passedIndex)
 {
 	GMref->addMoney_Implementation(-requiredFunds);
 	CurrentFunds->SetText(FText::FromString(FString::FromInt(GMref->GetCurMoney())));
-	tracksToSpawnObjects[passedIndex]->spawnPurchasedItem(currentRow->actorToSpawn);
+	tracksToSpawnObjects[passedIndex]->spawnPurchasedItem(actorToSpawn);
 	UE_LOG(LogTemp, Warning, TEXT("SpawnedObject"));
 }

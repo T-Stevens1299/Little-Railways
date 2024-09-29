@@ -55,8 +55,8 @@ void ALittleRailwaysCharacter::BeginPlay()
 	gmRef = Cast<ALittleRailwaysGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
 	//Shop out of order until I get round to fixing data table bug
-	//SHOP = CreateWidget<UShopHUD>(PC, Shopref);
-	//SHOP->SetGMptr(gmRef);
+	SHOP = CreateWidget<UShopHUD>(PC, Shopref);
+	SHOP->SetGMptr(gmRef);
 
 	// Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
