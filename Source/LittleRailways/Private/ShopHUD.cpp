@@ -42,7 +42,7 @@ void UShopHUD::SetGMptr(ALittleRailwaysGameMode* GMptr)
 {
 	GMref = GMptr;
 	PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	//setupSpawnTrackArray();
+	setupSpawnTrackArray();
 	setShopScreen(currentRowIndex);
 }
 
@@ -70,6 +70,16 @@ void UShopHUD::setShopScreen(int rowToFind)
 	BuildDate->SetText(currentRow->buildDate);
 	WheelArrangement->SetText(currentRow->wheelArrangement);
 	TractiveEffort->SetText(currentRow->tractiveEffort);
+	History->SetText(currentRow->HistoryText);
+	if (currentRow->actorToSpawn)
+	{
+		productToBuy = currentRow->actorToSpawn.Get();
+	}
+	else
+	{
+		productToBuy = NULL;
+		UE_LOG(LogTemp, Warning, TEXT("NoValidActor"));
+	}
 
 	requiredFunds = currentRow->requiredFunds;
 	requiredLevel = currentRow->requiredLevel;
@@ -116,8 +126,16 @@ void UShopHUD::previousAsset()
 
 void UShopHUD::setupSpawnTrackArray()
 {
-	//Handled in blueprint
-	
+	TArray<AActor*> FoundTrackActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), TrackClass, FoundTrackActors);
+	for (int i = 0; i < FoundTrackActors.Num(); i++)
+	{
+		ASpawningTrack* TrackTemp = Cast<ASpawningTrack>(FoundTrackActors[i]);
+		if (TrackTemp)
+		{
+			tracksToSpawnObjects.Add(TrackTemp);
+		}
+	}
 }
 
 void UShopHUD::purchasingCheck()
@@ -183,6 +201,6 @@ void UShopHUD::spawnBoughtItem(int passedIndex)
 {
 	GMref->addMoney_Implementation(-requiredFunds);
 	CurrentFunds->SetText(FText::FromString(FString::FromInt(GMref->GetCurMoney())));
-	tracksToSpawnObjects[passedIndex]->spawnPurchasedItem(currentRow->actorToSpawn);
+	tracksToSpawnObjects[passedIndex]->spawnPurchasedItem(productToBuy);
 	UE_LOG(LogTemp, Warning, TEXT("SpawnedObject"));
 }

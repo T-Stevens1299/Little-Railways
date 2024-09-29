@@ -37,7 +37,10 @@ struct FShopData : public FTableRowBase
 	FText tractiveEffort;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<AActor> actorToSpawn;
+	FText HistoryText;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSoftClassPtr<AActor> actorToSpawn;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool isLoco;
@@ -99,6 +102,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "spawnTracks")
 	TArray<ASpawningTrack*> tracksToSpawnObjects;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<AActor> TrackClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<AActor> productToBuy;
 
 	//UI Components
 	//Buttons
