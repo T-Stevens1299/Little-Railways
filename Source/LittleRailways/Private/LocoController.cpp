@@ -198,6 +198,8 @@ void ALocoController::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		EnhancedInputComponent->BindAction(CameraZoom, ETriggerEvent::Triggered, this, &ALocoController::ZoomCamera);
 
 		EnhancedInputComponent->BindAction(DragTriggerAction, ETriggerEvent::Triggered, this, &ALocoController::DragTrigger);
+
+		EnhancedInputComponent->BindAction(HideHUD, ETriggerEvent::Triggered, this, &ALocoController::ToggleHUD);
 	}
 }
 
@@ -245,6 +247,20 @@ void ALocoController::ZoomCamera(const FInputActionValue& Value)
 	const float newTargetArmLength = CameraArm->TargetArmLength + (Value.Get<float>() * ZoomStep);
 
 	CameraArm->TargetArmLength = FMath::Clamp(newTargetArmLength, MinZoomLength, MaxZoomLength);
+}
+
+void ALocoController::ToggleHUD(const FInputActionValue& Value)
+{
+	if (hudVisible)
+	{
+		HUD->SetVisibility(ESlateVisibility(false));
+		hudVisible = false;
+	}
+	else
+	{
+		HUD->SetVisibility(ESlateVisibility(true));
+		hudVisible = true;
+	}
 }
 //End Of Input Functions
 

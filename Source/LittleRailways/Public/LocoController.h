@@ -52,6 +52,8 @@ public:
 
 	void DragTrigger(const FInputActionValue& Value);
 
+	void ToggleHUD(const FInputActionValue& Value);
+
 public:
 	UPROPERTY(EditAnywhere)
 	USpringArmComponent* CameraArm;
@@ -129,6 +131,7 @@ public:
 	bool throttleOn;
 	bool isReversing;
 	bool isPressed = false;
+	bool hudVisible = true;
 
 	//Movement Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
@@ -210,6 +213,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input")
 	UInputAction* CameraZoom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input")
+	UInputAction* HideHUD;
 
 	/** HUD Widget */
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")

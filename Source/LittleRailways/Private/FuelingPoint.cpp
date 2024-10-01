@@ -12,16 +12,16 @@ AFuelingPoint::AFuelingPoint()
 	PrimaryActorTick.bCanEverTick = true;
 
 	TowerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootComponent"));
-	TowerMesh->SetupAttachment(RootComponent);
+	TowerMesh->SetupAttachment(GetRootComponent());
 
 	MovingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MoveableComponent"));
-	MovingMesh->SetupAttachment(RootComponent);
+	MovingMesh->SetupAttachment(TowerMesh);
 
 	TrainDetector = CreateDefaultSubobject<UBoxComponent>(TEXT("DetectorComponent"));
-	TrainDetector->SetupAttachment(RootComponent);
+	TrainDetector->SetupAttachment(TowerMesh);
 
 	fuelAmountDisplay = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextDisplayComponent"));
-	fuelAmountDisplay->SetupAttachment(RootComponent);
+	fuelAmountDisplay->SetupAttachment(TowerMesh);
 }
 
 // Called when the game starts or when spawned
