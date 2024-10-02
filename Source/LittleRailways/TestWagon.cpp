@@ -104,7 +104,11 @@ void ATestWagon::Brake_Implementation(int passedForce)
 
 void ATestWagon::Interact_Implementation()
 {
-	if (!isUnloading)
+	if (currentLoad == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("WagonEmpty"));
+	}
+	else if (!isUnloading)
 	{
 		GetWorldTimerManager().UnPauseTimer(unloadTimer);
 		isUnloading = true;
