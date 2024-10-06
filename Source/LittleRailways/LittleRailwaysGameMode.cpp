@@ -24,6 +24,7 @@ void ALittleRailwaysGameMode::BeginPlay()
 
 	HUD = CreateWidget<UPlayerProgressionHUD>(PC, HUDref);
 	HUD->changeLevel(currentLevel);
+	HUD->changeMoneyAmount(currentMoney);
 	calculatePercentage();
 }
 
