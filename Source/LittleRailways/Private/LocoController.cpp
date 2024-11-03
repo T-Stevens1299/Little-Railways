@@ -267,6 +267,7 @@ void ALocoController::ToggleHUD(const FInputActionValue& Value)
 void ALocoController::SpawnCharacter()
 {
 	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	APawn* SpawnedCharacter = GetWorld()->SpawnActor<APawn>(CharacterToSpawn, (GetActorLocation() + FVector(200.0f, 200.0f, 0.0f)), GetActorRotation(), SpawnParams);
 	
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))

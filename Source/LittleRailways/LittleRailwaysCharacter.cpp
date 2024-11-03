@@ -146,12 +146,12 @@ void ALittleRailwaysCharacter::Interact(const FInputActionValue& Value)
 	params.AddIgnoredActor(this);
 
 	FVector startLoc = FirstPersonCameraComponent->GetComponentLocation();
-	FVector endLoc = startLoc + (FirstPersonCameraComponent->GetForwardVector() * 250.0f);
+	FVector endLoc = startLoc + (FirstPersonCameraComponent->GetForwardVector() * 500.0f);
 
 	if (GetWorld()->LineTraceSingleByChannel(HitResult, startLoc, endLoc, ECollisionChannel::ECC_Camera, params, FCollisionResponseParams()))
 	{
 		IBPI_Interact* InteractInterface = Cast<IBPI_Interact>(HitResult.GetActor());
-		DrawDebugLine(GetWorld(), startLoc, endLoc, HitResult.GetActor() ? FColor::Blue : FColor::Red, false, 5.0f, 0, 10.0f);
+		DrawDebugLine(GetWorld(), startLoc, endLoc, HitResult.GetActor() ? FColor::Blue : FColor::Red, false, 0.0f, 0, 0.0f);
 		if (InteractInterface)
 		{
 			InteractInterface->Execute_Interact(HitResult.GetActor());

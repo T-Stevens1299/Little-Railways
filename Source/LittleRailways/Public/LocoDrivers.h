@@ -57,7 +57,16 @@ public:
 	float TractiveTorque;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TractionVariables")
-	float MaxSpeedKph;
+	float Stage4Speed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TractionVariables")
+	float Stage3Speed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TractionVariables")
+	float Stage2Speed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TractionVariables")
+	float Stage1Speed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TractionVariables")
 	TArray<UStaticMeshComponent*> wheelsToDrive;

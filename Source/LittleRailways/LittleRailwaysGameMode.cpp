@@ -21,6 +21,7 @@ void ALittleRailwaysGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	bStartPlayersAsSpectators = false;
 
 	HUD = CreateWidget<UPlayerProgressionHUD>(PC, HUDref);
 	HUD->changeLevel(currentLevel);

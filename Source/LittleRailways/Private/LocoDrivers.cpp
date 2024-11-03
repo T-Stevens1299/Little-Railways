@@ -42,11 +42,6 @@ ALocoDrivers::ALocoDrivers()
 void ALocoDrivers::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	for (int i = 0; i < wheelsToDrive.Num(); i++)
-	{
-		wheelsToDrive[i]->SetPhysicsMaxAngularVelocityInRadians(MaxSpeedKph, false);
-	}
 }
 
 // Called every frame
@@ -58,9 +53,49 @@ void ALocoDrivers::Tick(float DeltaTime)
 
 void ALocoDrivers::ApplyTorque(int passedTorqueMultiplier)
 {
+	UE_LOG(LogTemp, Warning, TEXT("The integer value is: %d"), passedTorqueMultiplier);
 	for (int i = 0; i < wheelsToDrive.Num(); i++)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Moving"));
+		switch (passedTorqueMultiplier)
+		{
+		case -100:
+			wheelsToDrive[i]->SetPhysicsMaxAngularVelocityInRadians(Stage4Speed, false);
+			UE_LOG(LogTemp, Warning, TEXT("Stage4"));
+			break;
+		case -75:
+			wheelsToDrive[i]->SetPhysicsMaxAngularVelocityInRadians(Stage3Speed, false);
+			UE_LOG(LogTemp, Warning, TEXT("Stage3"));
+			break;
+		case -50:
+			wheelsToDrive[i]->SetPhysicsMaxAngularVelocityInRadians(Stage2Speed, false);
+			UE_LOG(LogTemp, Warning, TEXT("Stage2"));
+			break;
+		case -25:
+			wheelsToDrive[i]->SetPhysicsMaxAngularVelocityInRadians(Stage1Speed, false);
+			UE_LOG(LogTemp, Warning, TEXT("Stage1"));
+			break;
+		case 100:
+			wheelsToDrive[i]->SetPhysicsMaxAngularVelocityInRadians(Stage4Speed, false);
+			UE_LOG(LogTemp, Warning, TEXT("Stage4"));
+			break;
+		case 75:
+			wheelsToDrive[i]->SetPhysicsMaxAngularVelocityInRadians(Stage3Speed, false);
+			UE_LOG(LogTemp, Warning, TEXT("Stage3"));
+			break;
+		case 50:
+			wheelsToDrive[i]->SetPhysicsMaxAngularVelocityInRadians(Stage2Speed, false);
+			UE_LOG(LogTemp, Warning, TEXT("Stage2"));
+			break;
+		case 25:
+			wheelsToDrive[i]->SetPhysicsMaxAngularVelocityInRadians(Stage1Speed, false);
+			UE_LOG(LogTemp, Warning, TEXT("Stage1"));
+			break;
+		default:
+			wheelsToDrive[i]->SetPhysicsMaxAngularVelocityInRadians(Stage4Speed, false);
+			UE_LOG(LogTemp, Warning, TEXT("Default"));
+			break;
+		}
+
 		wheelsToDrive[i]->AddTorqueInRadians(FVector(0.0f, (passedTorqueMultiplier * TractiveTorque), 0.0f));
 	}
 }
