@@ -52,15 +52,15 @@ void ATestWagon::Tick(float DeltaTime)
 
 void ATestWagon::LoadWagon() 
 {
-	if (currentLoad + 1 <= totalLoad)
-	{
+	//if (currentLoad + 1 <= totalLoad)
+	//{
 		currentLoad++;
 		SetWagonLoad(currentLoad);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("WagonFull"));
-	}
+	//}
+	//else
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("WagonFull"));
+	//}
 }
 
 void ATestWagon::UnloadWagon()

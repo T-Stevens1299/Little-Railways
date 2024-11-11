@@ -40,34 +40,34 @@ public:
 	UChildActorComponent* LoadingDevice;
 
 	//Variables
-	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProductManagement")
 	bool requiresInput;
 
-	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProductManagement")
 	int productAminRequiredAmount;
 
-	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProductManagement")
 	int productBminRequiredAmount;
 
-	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProductManagement")
 	int outputProduct;
 
-	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProductManagement")
 	int inputProductA;
 
-	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProductManagement")
 	int inputProductB;
 
-	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProductManagement")
 	int productaPayout;
 
-	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProductManagement")
 	int productbPayout;
 
-	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProductManagement")
 	int productaXP;
 
-	UPROPERTY(EditDefaultsOnly, Category = "ProductManagement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProductManagement")
 	int productbXP;
 
 	//Functions

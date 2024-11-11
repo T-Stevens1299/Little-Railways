@@ -127,8 +127,15 @@ void AIndustryClass::LoadProduct()
 			if (actorToCheck == generatedProductWagon)
 			{
 				ATestWagon* wagonRef = Cast<ATestWagon>(actorsToCheck[i]);
-				wagonRef->LoadWagon();
-				outputProduct--;
+				if ((wagonRef->currentLoad + 1) <= wagonRef->totalLoad)
+				{
+					wagonRef->LoadWagon();
+					outputProduct--;
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("WagonFull"));
+				}
 			}
 		}
 	}
