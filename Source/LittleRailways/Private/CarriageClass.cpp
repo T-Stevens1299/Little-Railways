@@ -55,6 +55,7 @@ void ACarriageClass::loadPassengers(FString destination)
 	//Safety check to ensure the array does not exceed a certain size
 	currentPassengerCount++;
 	passengerDestinations.Add(destination);
+	UE_LOG(LogTemp, Warning, TEXT("PassengersLoaded"));
 }
 
 void ACarriageClass::emptyPassengers(FString currentDestination)

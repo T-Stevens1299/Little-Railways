@@ -94,7 +94,7 @@ public:
 
 	void loadPassengers(bool IsUp);
 
-	void unloadPassengers();
+	void unloadPassengers(bool platformIdentifier);
 
 	void togglePassengerVisibility(int passedIndex, bool direction);
 

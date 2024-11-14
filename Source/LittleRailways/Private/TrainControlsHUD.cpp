@@ -85,13 +85,12 @@ void UTrainControlsHUD::UpdateCoalLevel(float updatedCoalLevel)
 
 void UTrainControlsHUD::loadPassengersTrigger()
 {
-	UE_LOG(LogTemp, Warning, TEXT("LoadTrigger"));
 	TrainRef->StationRef->loadPassengers(TrainRef->isUp);
 }
 
 void UTrainControlsHUD::unloadPassengersTrigger()
 {
-	TrainRef->StationRef->unloadPassengers();
+	TrainRef->StationRef->unloadPassengers(TrainRef->isUp);
 }
 
 void UTrainControlsHUD::ToggleButtons()
