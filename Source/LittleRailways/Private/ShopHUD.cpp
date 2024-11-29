@@ -56,7 +56,7 @@ void UShopHUD::closeShopWindow()
 {
 	PC->bShowMouseCursor = false;
 	PC->SetInputMode(FInputModeGameOnly());
-	this->RemoveFromViewport();
+	this->RemoveFromParent();
 }
 
 void UShopHUD::setShopScreen(int rowToFind)

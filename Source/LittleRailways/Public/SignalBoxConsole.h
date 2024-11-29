@@ -33,7 +33,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "InteractEventRef")
 	void Interact(); void Interact_Implementation() override;
 
-	void changeSelectedPoint(int arrayIndex);
+	bool changeSelectedPoint(int arrayIndex);
 
 	void setPointStatus();
 

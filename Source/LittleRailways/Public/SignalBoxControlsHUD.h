@@ -15,10 +15,13 @@ public:
 	USignalBoxControlsHUD(const FObjectInitializer& ObjectInitializer);
 
 	virtual void NativeConstruct() override;
+	void setupPointStatus();
 
-	void setPointsOnMap();
+	UFUNCTION(BlueprintImplementableEvent, Category = "Widget")
+	void SetupMap();
 
 	//Variables
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "pointStatuses")
 	TArray<bool> pointStatus;
 
 	//References
@@ -27,7 +30,7 @@ public:
 	void SetPtr(ASignalBoxConsole* SBptr);
 
 	UFUNCTION(BlueprintCallable)
-	void pointClicked(int arrayIndex);
+	bool pointClicked(int arrayIndex);
 
 	UFUNCTION()
 	void closeWindow();

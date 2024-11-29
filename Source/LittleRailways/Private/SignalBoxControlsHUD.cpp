@@ -25,14 +25,16 @@ void USignalBoxControlsHUD::SetPtr(ASignalBoxConsole *SBptr)
 	SBref = SBptr;
 }
 
-void USignalBoxControlsHUD::setPointsOnMap()
+void USignalBoxControlsHUD::setupPointStatus()
 {
 	pointStatus = SBref->getPointStatus();
+	SetupMap();
 }
 
-void USignalBoxControlsHUD::pointClicked(int arrayIndex)
+bool USignalBoxControlsHUD::pointClicked(int arrayIndex)
 {
-	SBref->changeSelectedPoint(arrayIndex);
+	bool currentPointStatus = SBref->changeSelectedPoint(arrayIndex);
+	return currentPointStatus;
 }
 
 void USignalBoxControlsHUD::closeWindow()

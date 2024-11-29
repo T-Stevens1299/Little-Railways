@@ -79,7 +79,7 @@ void ALittleRailwaysGameMode::ToggleHUD()
 {
 	if (HUDon)
 	{
-		HUD->RemoveFromViewport();
+		HUD->RemoveFromParent();
 		HUDon = false;
 	}
 	else

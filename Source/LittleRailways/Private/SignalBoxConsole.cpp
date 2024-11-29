@@ -24,6 +24,10 @@ void ASignalBoxConsole::BeginPlay()
 
 	PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
+	pointStatus.Init(NULL, 16);
+
+	setPointStatus();
+
 	HUD = CreateWidget<USignalBoxControlsHUD>(PC, HUDref);
 	HUD->SetPtr(this);
 }
@@ -37,7 +41,7 @@ void ASignalBoxConsole::Tick(float DeltaTime)
 
 void ASignalBoxConsole::Interact_Implementation()
 {
-	HUD->setPointsOnMap();
+	HUD->setupPointStatus();
 	HUD->AddToViewport();
 	PC->bShowMouseCursor = true;
 	PC->SetInputMode(FInputModeUIOnly());
@@ -47,26 +51,32 @@ void ASignalBoxConsole::closeHUD()
 {
 	PC->bShowMouseCursor = false;
 	PC->SetInputMode(FInputModeGameOnly());
-	HUD->RemoveFromViewport();
+	HUD->RemoveFromParent();
 }
 
-void ASignalBoxConsole::changeSelectedPoint(int arrayIndex)
+bool ASignalBoxConsole::changeSelectedPoint(int arrayIndex)
 {
 	if (pointsToControl.IsValidIndex(arrayIndex))
 	{
 		pointsToControl[arrayIndex]->changePoints();
 	}
-
-	setPointStatus();
+	pointStatus[arrayIndex] = pointsToControl[arrayIndex]->isStraight;
+	return pointStatus[arrayIndex];
 }
 
 void ASignalBoxConsole::setPointStatus()
 {
 	for (int i = 0; i < pointsToControl.Num(); i++)
 	{
-		if (pointsToControl.IsValidIndex(i) && pointStatus.IsValidIndex(i))
+		UE_LOG(LogTemp, Warning, TEXT("LoopRun"));
+		if (pointsToControl.IsValidIndex(i))
 		{
-			pointStatus[i] = pointsToControl[i]->isStraight;
+			UE_LOG(LogTemp, Warning, TEXT("FirstConditionMet"));
+			if (pointStatus.IsValidIndex(i))
+			{
+				pointStatus[i] = pointsToControl[i]->isStraight;
+				UE_LOG(LogTemp, Warning, TEXT("PointStatusSet"));
+			}
 		}
 	}
 }
