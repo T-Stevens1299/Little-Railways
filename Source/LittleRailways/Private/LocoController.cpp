@@ -165,6 +165,7 @@ void ALocoController::Tick(float DeltaTime)
 				{
 					DriverSet2Component->ApplyTorque(passedTorqueMulti);
 				}
+				ToggleMovementSteam();
 			}
 			else
 			{
@@ -176,8 +177,13 @@ void ALocoController::Tick(float DeltaTime)
 				{
 					DriverSet2Component->ApplyTorque(-passedTorqueMulti);
 				}
+				ToggleMovementSteam();
 			}
 		}
+	}
+	else
+	{
+		ToggleStaticSteam();
 	}
 
 	speed = ((GetVelocity().Size2D() * 3600) / 100000);
@@ -334,6 +340,10 @@ void ALocoController::SetReverser_Implementation(int passedDetent)
 void ALocoController::setRegStage(int passedDetent)
 {
 	RegulatorComponent->engageRegulator(passedDetent);
+	if (passedDetent == 0)
+	{
+		ToggleStaticSteam();
+	}
 }
 
 void ALocoController::setReverserStage(int passedDetent)

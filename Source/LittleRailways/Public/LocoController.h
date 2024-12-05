@@ -128,6 +128,8 @@ public:
 
 	//Movement Bools
 	bool canMove;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MovementData")
 	bool throttleOn;
 	bool isReversing;
 	bool isPressed = false;
@@ -187,6 +189,12 @@ public:
 	void consumeFuelandWater();
 
 	void togglePassengerButtons(bool isUP, AStationClass* stationRef);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "SteamControl")
+	void ToggleMovementSteam();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "SteamControl")
+	void ToggleStaticSteam();
 
 	FTimerHandle MemberTimerHandle;
 
