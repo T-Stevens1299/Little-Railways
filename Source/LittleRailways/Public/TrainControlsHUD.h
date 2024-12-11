@@ -91,4 +91,7 @@ public:
 	float totalCoalLevel;
 	float totalWaterLevel;
 
+	UPROPERTY(BlueprintReadWrite)
+	float percentage;
+
 };

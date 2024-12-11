@@ -39,8 +39,11 @@ void UTrainControlsHUD::OnButtonClicked()
 
 void UTrainControlsHUD::SpeedCalculator(float speedPassed)
 {
-	FString speedOutput = FString::SanitizeFloat(speedPassed);
-	OnSpeedChanged(FText::FromString(FString("Speed: " + speedOutput + "km/h")));
+	float speedMph = (speedPassed / 1.609f);
+	percentage = (speedMph / 50.0f);
+
+	FString speedOutput = FString::SanitizeFloat(speedMph);
+	OnSpeedChanged(FText::FromString(FString("Speed: " + speedOutput + "mph")));
 }
 
 void UTrainControlsHUD::SetTrainPtr(ALocoController *TrainPrt)
