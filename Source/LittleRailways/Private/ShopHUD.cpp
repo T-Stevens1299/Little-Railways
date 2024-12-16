@@ -36,6 +36,11 @@ void UShopHUD::NativeConstruct()
 	{
 		BuyButton->OnClicked.AddDynamic(this, &UShopHUD::purchasingCheck);
 	}
+
+	if (VariationButton)
+	{
+		VariationButton->OnClicked.AddDynamic(this, &UShopHUD::changeColourVariation);
+	}
 }
 
 void UShopHUD::SetGMptr(ALittleRailwaysGameMode* GMptr)
@@ -64,6 +69,8 @@ void UShopHUD::setShopScreen(int rowToFind)
 	FName rowName = FName(*(FString::FromInt(rowToFind)));
 	currentRow = dataTableRef.DataTable->FindRow<FShopData>(rowName, "");
 
+	colourVariation = 1;
+
 	AssetName->SetText(currentRow->AssetName);
 	AssetFunds->SetText(FText::FromString(FString::FromInt(currentRow->requiredFunds)));
 	AssetLevel->SetText(FText::FromString(FString::FromInt(currentRow->requiredLevel)));
@@ -71,9 +78,10 @@ void UShopHUD::setShopScreen(int rowToFind)
 	WheelArrangement->SetText(currentRow->wheelArrangement);
 	TractiveEffort->SetText(currentRow->tractiveEffort);
 	History->SetText(currentRow->HistoryText);
-	if (currentRow->actorToSpawn)
+	if (currentRow->LocoVariation1)
 	{
-		productToBuy = currentRow->actorToSpawn.Get();
+		productToBuy = currentRow->LocoVariation1.Get();
+		UE_LOG(LogTemp, Warning, TEXT("ValidActor"));
 	}
 	else
 	{
@@ -96,6 +104,39 @@ void UShopHUD::setShopScreen(int rowToFind)
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("RowChanged"));
+}
+
+void UShopHUD::changeColourVariation()
+{
+	if ((colourVariation + 1) >= 4)
+	{
+		colourVariation = 1;
+		if(currentRow->LocoVariation1)
+		{
+			productToBuy = currentRow->LocoVariation1.Get();
+		}
+	}
+	else
+	{
+		colourVariation++;
+	}
+
+	if (colourVariation == 2)
+	{
+		if (currentRow->LocoVariation2)
+		{
+			productToBuy = currentRow->LocoVariation2.Get();
+		}
+	}
+
+	if (colourVariation == 3)
+	{
+		if (currentRow->LocoVariation3)
+		{
+			productToBuy = currentRow->LocoVariation3.Get();
+		}
+	}
+	UE_LOG(LogTemp, Warning, TEXT("The integer value is: %d"), colourVariation);
 }
 
 void UShopHUD::nextAsset()

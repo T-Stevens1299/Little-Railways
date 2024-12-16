@@ -40,7 +40,13 @@ struct FShopData : public FTableRowBase
 	FText HistoryText;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSoftClassPtr<AActor> actorToSpawn;
+	TSoftClassPtr<AActor> LocoVariation1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSoftClassPtr<AActor> LocoVariation2;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSoftClassPtr<AActor> LocoVariation3;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool isLoco;
@@ -79,6 +85,9 @@ public:
 
 	void spawnBoughtItem(int passedIndex);
 
+	UFUNCTION()
+	void changeColourVariation();
+
 	UFUNCTION(BlueprintCallable)
 	void purchasingCheck();
 
@@ -96,6 +105,8 @@ public:
 	int totalRows;
 
 	int currentRowIndex = 1;
+
+	int colourVariation = 1;
 
 	int requiredFunds;
 	int requiredLevel;
@@ -119,6 +130,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* PreviousButton;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* VariationButton;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* BuyButton;
