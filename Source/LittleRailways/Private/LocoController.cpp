@@ -4,14 +4,19 @@
 
 #include "LocoController.h"
 #include "TrainControlsHUD.h"
+#include "TimerManager.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "LittleRailways/Reverser.h"
 #include "LittleRailways/Regulator.h"
 #include "LittleRailways/BrakeLever.h"
+#include "LocomotiveTender.h"
+#include "LocoDrivers.h"
+#include "StationClass.h"
 #include "GameFramework/Controller.h"
 #include <Kismet/GameplayStatics.h>
+#include "LittleRailways/LittleRailwaysCharacter.h"
 #include "GameFramework/PlayerController.h"
 
 // Sets default values
@@ -27,17 +32,17 @@ ALocoController::ALocoController()
 	LocoBody = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootComponent"));
 	LocoBody->SetupAttachment(GetRootComponent());
 
-	LeftWheel1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentA"));
-	LeftWheel1->SetupAttachment(LocoBody);
+	DriverSet1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Driver1Component"));
+	DriverSet1->SetupAttachment(LocoBody);
 
-	LeftWheel2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentB"));
-	LeftWheel2->SetupAttachment(LocoBody);
+	DriverSet2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Driver2Component"));
+	DriverSet2->SetupAttachment(LocoBody);
 
-	RightWheel1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentC"));
-	RightWheel1->SetupAttachment(LocoBody);
+	Coupling1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Coupling1Component"));
+	Coupling1->SetupAttachment(LocoBody);
 
-	RightWheel2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WheelComponentD"));
-	RightWheel2->SetupAttachment(LocoBody);
+	Coupling2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Coupling2Component"));
+	Coupling2->SetupAttachment(LocoBody);
 
 	BrakeMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("BrakeComponent"));
 	BrakeMesh->SetupAttachment(LocoBody);
@@ -48,8 +53,12 @@ ALocoController::ALocoController()
 	ReverserMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("ReverserComponent"));
 	ReverserMesh->SetupAttachment(LocoBody);
 
+	TenderMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("TenderComponent"));
+	TenderMesh->SetupAttachment(LocoBody);
+
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
-	CameraArm->SetupAttachment(RootComponent);
+	CameraArm->SetupAttachment(LocoBody);
+	CameraArm->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f)); // Position the camera
 	CameraArm->TargetArmLength = 400.0f;	
 	CameraArm->bUsePawnControlRotation = true;
 
@@ -67,27 +76,29 @@ void ALocoController::BeginPlay()
 
 	SetComponents();
 
-	PC->bShowMouseCursor = true;
+	HUD = CreateWidget<UTrainControlsHUD>(PC, HUDref);
+	HUD->SetTrainPtr(this);
 
-	if (IsLocallyControlled() && HUDref)
-	{
-		HUD = CreateWidget<UTrainControlsHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0), HUDref);
-		HUD->SetTrainPtr(this);
-		HUD->AddToViewport();
-	}
+	SetUILevels();
 
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(TrainControlsMappingContext, 0);
-		}
-	}
-
+	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ALocoController::consumeFuelandWater, 10.0f, true, 10.0f);
 }
 
+//Sets up the references for the child actor components
 void ALocoController::SetComponents()
 {
+	DriverSet1Component = Cast<ALocoDrivers>(DriverSet1->GetChildActor());
+	if (DriverSet1Component)
+	{
+		DriverSet1Component->SetTrainPtr(this);
+	}
+
+	DriverSet2Component = Cast<ALocoDrivers>(DriverSet2->GetChildActor());
+	if (DriverSet2Component)
+	{
+		DriverSet2Component->SetTrainPtr(this);
+	}
+
 	ReverserComponent = Cast<AReverser>(ReverserMesh->GetChildActor());
 	if (ReverserComponent)
 	{
@@ -105,6 +116,29 @@ void ALocoController::SetComponents()
 	{
 		BrakeLeverComponent->SetTrainPtr(this);
 	}
+
+	TrainTenderComponent = Cast<ALocomotiveTender>(TenderMesh->GetChildActor());
+	if (TrainTenderComponent)
+	{
+		TrainTenderComponent->SetTrainPtr(this);
+	}
+}
+
+void ALocoController::Possessed() 
+{
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(TrainControlsMappingContext, 0);
+		}
+	}
+
+	if (IsLocallyControlled() && HUDref)
+	{
+		PC->bShowMouseCursor = true;
+		HUD->AddToViewport();
+	}
 }
 
 // Called every frame
@@ -112,29 +146,48 @@ void ALocoController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (canMove)
+	if (curFuelLevel == 0)
+	{
+		fireActive = false;
+	}
+
+	if (canMove && fireActive && TrainTenderComponent->curWaterAmount > 0)
 	{
 		if (throttleOn)
 		{
 			if (!isReversing)
 			{
-				LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
-				LeftWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
-				RightWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
-				RightWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * 5000.0f), 0.0f));
+				if (DriverSet1Component)
+				{
+					DriverSet1Component->ApplyTorque(passedTorqueMulti);
+				}
+				if (DriverSet2Component)
+				{
+					DriverSet2Component->ApplyTorque(passedTorqueMulti);
+				}
+				ToggleMovementSteam();
 			}
 			else
 			{
-				LeftWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -5000.0f), 0.0f));
-				LeftWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -5000.0f), 0.0f));
-				RightWheel1->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -5000.0f), 0.0f));
-				RightWheel2->AddTorqueInRadians(FVector(0.0f, (passedTorqueMulti * -5000.0f), 0.0f));
+				if (DriverSet1Component)
+				{
+					DriverSet1Component->ApplyTorque(-passedTorqueMulti);
+				}
+				if (DriverSet2Component)
+				{
+					DriverSet2Component->ApplyTorque(-passedTorqueMulti);
+				}
+				ToggleMovementSteam();
 			}
 		}
 	}
+	else
+	{
+		ToggleStaticSteam();
+	}
 
 	speed = ((GetVelocity().Size2D() * 3600) / 100000);
-	
+
 	HUD->SpeedCalculator(speed);
 }
 
@@ -151,12 +204,12 @@ void ALocoController::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		EnhancedInputComponent->BindAction(CameraZoom, ETriggerEvent::Triggered, this, &ALocoController::ZoomCamera);
 
 		EnhancedInputComponent->BindAction(DragTriggerAction, ETriggerEvent::Triggered, this, &ALocoController::DragTrigger);
+
+		EnhancedInputComponent->BindAction(HideHUD, ETriggerEvent::Triggered, this, &ALocoController::ToggleHUD);
 	}
 }
 
 //Input Functions
-
-
 void ALocoController::CameraDrag(const FInputActionValue& Value)
 {
 	if (isPressed == true)
@@ -189,8 +242,10 @@ void ALocoController::DragTrigger(const FInputActionValue& Value)
 
 void ALocoController::ExitTrain(const FInputActionValue& Value) 
 {
-	UE_LOG(LogTemp, Warning, TEXT("ExitTrain"));
 	PC->bShowMouseCursor = false;
+	UE_LOG(LogTemp, Warning, TEXT("SpawnCharacter"));
+	HUD->RemoveFromParent();
+	SpawnCharacter();
 }
 
 void ALocoController::ZoomCamera(const FInputActionValue& Value) 
@@ -199,8 +254,36 @@ void ALocoController::ZoomCamera(const FInputActionValue& Value)
 
 	CameraArm->TargetArmLength = FMath::Clamp(newTargetArmLength, MinZoomLength, MaxZoomLength);
 }
+
+void ALocoController::ToggleHUD(const FInputActionValue& Value)
+{
+	if (hudVisible)
+	{
+		HUD->SetVisibility(ESlateVisibility(false));
+		hudVisible = false;
+	}
+	else
+	{
+		HUD->SetVisibility(ESlateVisibility(true));
+		hudVisible = true;
+	}
+}
 //End Of Input Functions
 
+void ALocoController::SpawnCharacter()
+{
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	APawn* SpawnedCharacter = GetWorld()->SpawnActor<APawn>(CharacterToSpawn, (GetActorLocation() + FVector(200.0f, 200.0f, 0.0f)), GetActorRotation(), SpawnParams);
+	
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+	{
+		Subsystem->RemoveMappingContext(TrainControlsMappingContext);
+	}
+
+	PC->Possess(SpawnedCharacter);
+	Cast<ALittleRailwaysCharacter>(SpawnedCharacter)->Possessed();
+}
 
 //Force application functions
 void ALocoController::ApplyTorque(int passedTorqueMultiplier)
@@ -215,12 +298,11 @@ void ALocoController::ApplyTorque(int passedTorqueMultiplier)
 
 void ALocoController::ApplyBrakes(int passedBrakeVal)
 {
-	float brakeVal = passedBrakeVal;
-
-	LeftWheel1->SetAngularDamping(brakeVal);
-	LeftWheel2->SetAngularDamping(brakeVal);
-	RightWheel1->SetAngularDamping(brakeVal);
-	RightWheel2->SetAngularDamping(brakeVal);
+	DriverSet1Component->ApplyBreaks(passedBrakeVal);
+	if (DriverSet2Component)
+	{
+		DriverSet2Component->ApplyBreaks(passedBrakeVal);
+	}
 }
 
 
@@ -258,6 +340,10 @@ void ALocoController::SetReverser_Implementation(int passedDetent)
 void ALocoController::setRegStage(int passedDetent)
 {
 	RegulatorComponent->engageRegulator(passedDetent);
+	if (passedDetent == 0)
+	{
+		ToggleStaticSteam();
+	}
 }
 
 void ALocoController::setReverserStage(int passedDetent)
@@ -268,4 +354,79 @@ void ALocoController::setReverserStage(int passedDetent)
 void ALocoController::setBrakeStage(int passedDetent)
 {
 	BrakeLeverComponent->engageBrakeStage(passedDetent);
+}
+
+//Fuel Functions
+void ALocoController::SetUILevels()
+{
+	HUD->totalCoalLevel = TrainTenderComponent->fuelCapacity;
+	HUD->totalWaterLevel = TrainTenderComponent->waterCapacity;
+
+	HUD->UpdateFireLevel(0.0f);
+	HUD->UpdateWaterLevel(TrainTenderComponent->waterCapacity);
+	HUD->UpdateCoalLevel(TrainTenderComponent->fuelCapacity);
+}
+
+void ALocoController::togglePassengerButtons(bool isUP, AStationClass* stationRef)
+{
+	isUp = isUP;
+	StationRef = stationRef;
+	HUD->ToggleButtons();
+}
+
+void ALocoController::FuelFire()
+{
+	if (!(TrainTenderComponent->curFuelAmount <= 0))
+	{
+		if (curFuelLevel < 100)
+		{
+			if (curFuelLevel + 25.0f <= 100)
+			{
+				curFuelLevel = curFuelLevel + 25.0f;
+			}
+			else
+			{
+				curFuelLevel = 100;
+			}
+		}
+
+		fireActive = true;
+		TrainTenderComponent->consumeFuel(5.0f);
+		HUD->UpdateFireLevel(curFuelLevel);
+		HUD->UpdateCoalLevel(TrainTenderComponent->curFuelAmount);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NoFuel"));
+	}
+}
+
+void ALocoController::consumeFuelandWater()
+{
+	if (fireActive)
+	{
+		TrainTenderComponent->consumeWater(1.0f);
+		if (curFuelLevel - 1.0f == 0)
+		{
+			curFuelLevel = 0;
+		}
+		else
+		{
+			curFuelLevel = curFuelLevel - 1.0f;
+		}
+		HUD->UpdateWaterLevel(TrainTenderComponent->curWaterAmount);
+		HUD->UpdateFireLevel(curFuelLevel);
+	}
+}
+
+void ALocoController::AddFuel_Implementation(float passedFuelToAdd, bool isWater)
+{
+	if (isWater)
+	{
+		TrainTenderComponent->increaseWater(passedFuelToAdd);
+	}
+	else
+	{
+		TrainTenderComponent->increaseFuel(passedFuelToAdd);
+	}
 }

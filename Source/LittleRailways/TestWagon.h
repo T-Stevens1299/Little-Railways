@@ -7,10 +7,11 @@
 #include "GameFramework/Actor.h"
 #include "Components/PrimitiveComponent.h"
 #include "BPI_Braking.h"
+#include "Public/BPI_Interact.h"
 #include "TestWagon.generated.h"
 
 UCLASS()
-class LITTLERAILWAYS_API ATestWagon : public AActor, public IBPI_Braking
+class LITTLERAILWAYS_API ATestWagon : public AActor, public IBPI_Braking, public IBPI_Interact
 {
 	GENERATED_BODY()
 
@@ -52,14 +53,20 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Wagon", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* BrakeMesh;
 
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wagon", meta = (AllowPrivateAccess = "true"))
-	//TArray<UStaticMesh> wheelArray;
-
 public:
-	//Numerical Variables
-	UPROPERTY(EditAnywhere)
-	int32 loadPercentage;
+	//Variables
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LoadAmount")
+	int currentLoad;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LoadAmount")
+	int totalLoad;
+
+	bool isUnloading = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpawnedActor")
+	TSubclassOf<AActor> spawnedActor;
+
+	FTimerHandle unloadTimer;
 
 
 public:
@@ -67,11 +74,19 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Wagon")
 	void LoadWagon();
 
-	void SetWagonLoad(int loadPercent);
+	UFUNCTION(BlueprintCallable, Category = "Wagon")
+	void UnloadWagon();
+
+	void SpawnLoadActor();
+
+	void SetWagonLoad(int CurrentLoad);
 
 	void ApplyBrakes(int passedBrakeVal);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Braking")
 	void Brake(int passedForce); void Brake_Implementation(int passedForce) override;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "InteractEventRef")
+	void Interact(); void Interact_Implementation() override;
 
 };

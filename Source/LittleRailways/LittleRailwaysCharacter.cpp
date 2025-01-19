@@ -9,6 +9,11 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include <Kismet/GameplayStatics.h>
+#include "LocoController.h"
+#include "ShopHUD.h"
+#include "BPI_Interact.h"
+#include "BPI_StatsIncrease.h"
 #include "Engine/LocalPlayer.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -46,6 +51,13 @@ void ALittleRailwaysCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
+	PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	gmRef = Cast<ALittleRailwaysGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	//Shop out of order until I get round to fixing data table bug
+	SHOP = CreateWidget<UShopHUD>(PC, Shopref);
+	SHOP->SetGMptr(gmRef);
+
 	// Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -55,6 +67,19 @@ void ALittleRailwaysCharacter::BeginPlay()
 		}
 	}
 
+}
+
+void ALittleRailwaysCharacter::Possessed() 
+{
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = false;
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -73,6 +98,17 @@ void ALittleRailwaysCharacter::SetupPlayerInputComponent(UInputComponent* Player
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ALittleRailwaysCharacter::Look);
+
+		// Train Boarding
+		EnhancedInputComponent->BindAction(TrainBoardAction, ETriggerEvent::Triggered, this, &ALittleRailwaysCharacter::BoardTrain);
+		
+		// Interacting
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ALittleRailwaysCharacter::Interact);
+		
+		// HUD Toggling
+		EnhancedInputComponent->BindAction(HudAction, ETriggerEvent::Triggered, this, &ALittleRailwaysCharacter::toggleHUD);
+
+		EnhancedInputComponent->BindAction(ShopAction, ETriggerEvent::Triggered, this, &ALittleRailwaysCharacter::openShopMenu);
 	}
 	else
 	{
@@ -80,6 +116,48 @@ void ALittleRailwaysCharacter::SetupPlayerInputComponent(UInputComponent* Player
 	}
 }
 
+void ALittleRailwaysCharacter::toggleHUD(const FInputActionValue& Value)
+{
+	gmRef->ToggleHUD();
+}
+
+void ALittleRailwaysCharacter::BoardTrain(const FInputActionValue& Value)
+{
+	if (gmRef->HUDon)
+	{
+		gmRef->ToggleHUD();
+	}
+	PerformLineTrace();
+}
+
+void ALittleRailwaysCharacter::openShopMenu(const FInputActionValue& Value)
+{
+	SHOP->updateMoneyXP();
+	SHOP->AddToViewport();
+	PC->bShowMouseCursor = true;
+	PC->SetInputMode(FInputModeUIOnly());
+}
+
+void ALittleRailwaysCharacter::Interact(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Interact"));
+	FHitResult HitResult;
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
+
+	FVector startLoc = FirstPersonCameraComponent->GetComponentLocation();
+	FVector endLoc = startLoc + (FirstPersonCameraComponent->GetForwardVector() * 500.0f);
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, startLoc, endLoc, ECollisionChannel::ECC_Camera, params, FCollisionResponseParams()))
+	{
+		IBPI_Interact* InteractInterface = Cast<IBPI_Interact>(HitResult.GetActor());
+		DrawDebugLine(GetWorld(), startLoc, endLoc, HitResult.GetActor() ? FColor::Blue : FColor::Red, false, 0.0f, 0, 0.0f);
+		if (InteractInterface)
+		{
+			InteractInterface->Execute_Interact(HitResult.GetActor());
+		}
+	}
+}
 
 void ALittleRailwaysCharacter::Move(const FInputActionValue& Value)
 {
@@ -105,6 +183,33 @@ void ALittleRailwaysCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ALittleRailwaysCharacter::PerformLineTrace()
+{
+	FHitResult HitResult;
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
+	
+	FVector startLoc = FirstPersonCameraComponent->GetComponentLocation();
+	FVector endLoc = startLoc + (FirstPersonCameraComponent->GetForwardVector() * 250.0f);
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, startLoc, endLoc, ECollisionChannel::ECC_Camera, params, FCollisionResponseParams()))
+	{
+		ALocoController* foundLoco = Cast<ALocoController>(HitResult.GetActor());
+
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+		{
+			Subsystem->RemoveMappingContext(DefaultMappingContext);
+		}
+
+		PC->Possess(foundLoco);
+		Cast<ALocoController>(foundLoco)->Possessed();
+
+		Destroy();
+	}
+
+	/*DrawDebugLine(GetWorld(), startLoc, endLoc, FColor::Red, false, 5.0f, 0, 5.0f);*/
 }
 
 void ALittleRailwaysCharacter::SetHasRifle(bool bNewHasRifle)

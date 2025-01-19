@@ -9,6 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "LittleRailways/BPI_Braking.h"
+#include "BPI_Fueling.h"
 #include "Blueprint/UserWidget.h"
 #include "LocoController.generated.h"
 
@@ -19,9 +20,12 @@ struct FInputActionValue;
 class AReverser;
 class ARegulator;
 class ABrakeLever;
+class ALocomotiveTender;
+class AStationClass;
+class ALocoDrivers;
 
 UCLASS()
-class LITTLERAILWAYS_API ALocoController : public APawn, public IBPI_Braking
+class LITTLERAILWAYS_API ALocoController : public APawn, public IBPI_Braking, public IBPI_Fueling
 {
 	GENERATED_BODY()
 
@@ -48,6 +52,8 @@ public:
 
 	void DragTrigger(const FInputActionValue& Value);
 
+	void ToggleHUD(const FInputActionValue& Value);
+
 public:
 	UPROPERTY(EditAnywhere)
 	USpringArmComponent* CameraArm;
@@ -60,18 +66,6 @@ public:
 	UStaticMeshComponent* LocoBody;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* LeftWheel1;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* LeftWheel2;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* RightWheel1;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* RightWheel2;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* BrakeMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
@@ -79,6 +73,21 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* ReverserMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* TenderMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* DriverSet1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* DriverSet2;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* Coupling1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UChildActorComponent* Coupling2;
 
 	/** Lever Components */
 	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
@@ -90,22 +99,62 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
 	ABrakeLever* BrakeLeverComponent;
 
+	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
+	ALocomotiveTender* TrainTenderComponent;
+
+	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
+	ALocoDrivers* DriverSet1Component;
+
+	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
+	ALocoDrivers* DriverSet2Component;
+
+	UPROPERTY(EditDefaultsOnly, Category = "ActorSpawn")
+	TSubclassOf<ACharacter> CharacterToSpawn;
+
 	//Variables
 
+	//Station Variables
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
+	AStationClass* StationRef;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
+	bool isUp;
+	//Fuel variables
+	float curFuelLevel = 0;
+
+	bool fireActive = false;
+
+	bool isMoving;
+
+	//Movement Bools
 	bool canMove;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MovementData")
 	bool throttleOn;
 	bool isReversing;
 	bool isPressed = false;
+	bool hudVisible = true;
 
+	//Movement Variables
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	float TractiveTorque;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	float MaxSpeedKph;
 
 	int passedTorqueMulti;
+
 	float speed;
+
 	FVector2D PreviousMouseLocation;
 
 public:
 	//Functions
 	UFUNCTION(BlueprintCallable, Category = "Loco")
 	void ApplyTorque(int passedTorqueMultiplier);
+
+	UFUNCTION(BlueprintCallable, Category = "Loco")
+	void Possessed();
 
 	void ApplyBrakes(int passedBrakeVal);
 
@@ -118,15 +167,36 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControlsRef")
 	void SetReverser(int passedDetent); void SetReverser_Implementation(int passedDetent) override;
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "InteractEventRef")
+	void AddFuel(float passedFuelToAdd, bool isWater); void AddFuel_Implementation(float passedFuelToAdd, bool isWater) override;
+
 	void SetComponents();
 
 	void MoveCam();
+
+	void SpawnCharacter();
 
 	void setRegStage(int passedDetent);
 
 	void setBrakeStage(int passedDetent);
 
 	void setReverserStage(int passedDetent);
+
+	void FuelFire();
+
+	void SetUILevels();
+
+	void consumeFuelandWater();
+
+	void togglePassengerButtons(bool isUP, AStationClass* stationRef);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "SteamControl")
+	void ToggleMovementSteam();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "SteamControl")
+	void ToggleStaticSteam();
+
+	FTimerHandle MemberTimerHandle;
 
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraArm; }
@@ -151,6 +221,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input")
 	UInputAction* CameraZoom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input")
+	UInputAction* HideHUD;
 
 	/** HUD Widget */
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
