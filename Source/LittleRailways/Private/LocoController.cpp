@@ -44,15 +44,6 @@ ALocoController::ALocoController()
 	Coupling2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Coupling2Component"));
 	Coupling2->SetupAttachment(LocoBody);
 
-	BrakeMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("BrakeComponent"));
-	BrakeMesh->SetupAttachment(LocoBody);
-
-	RegulatorMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("RegComponent"));
-	RegulatorMesh->SetupAttachment(LocoBody);
-
-	ReverserMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("ReverserComponent"));
-	ReverserMesh->SetupAttachment(LocoBody);
-
 	TenderMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("TenderComponent"));
 	TenderMesh->SetupAttachment(LocoBody);
 
@@ -97,24 +88,6 @@ void ALocoController::SetComponents()
 	if (DriverSet2Component)
 	{
 		DriverSet2Component->SetTrainPtr(this);
-	}
-
-	ReverserComponent = Cast<AReverser>(ReverserMesh->GetChildActor());
-	if (ReverserComponent)
-	{
-		ReverserComponent->SetTrainPtr(this);
-	}
-
-	RegulatorComponent = Cast<ARegulator>(RegulatorMesh->GetChildActor());
-	if (RegulatorComponent)
-	{
-		RegulatorComponent->SetTrainPtr(this);
-	}
-
-	BrakeLeverComponent = Cast<ABrakeLever>(BrakeMesh->GetChildActor());
-	if (BrakeLeverComponent)
-	{
-		BrakeLeverComponent->SetTrainPtr(this);
 	}
 
 	TrainTenderComponent = Cast<ALocomotiveTender>(TenderMesh->GetChildActor());
@@ -274,7 +247,7 @@ void ALocoController::SpawnCharacter()
 {
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	APawn* SpawnedCharacter = GetWorld()->SpawnActor<APawn>(CharacterToSpawn, (GetActorLocation() + FVector(200.0f, 200.0f, 0.0f)), GetActorRotation(), SpawnParams);
+	APawn* SpawnedCharacter = GetWorld()->SpawnActor<APawn>(CharacterToSpawn, (GetActorLocation() + FVector(250.0f, 250.0f, 250.0f)), GetActorRotation(), SpawnParams);
 	
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
 	{
@@ -305,41 +278,10 @@ void ALocoController::ApplyBrakes(int passedBrakeVal)
 	}
 }
 
-
-//Interface functions
-void ALocoController::Brake_Implementation(int passedForce)
-{
-	ApplyBrakes(passedForce);
-}
-
-void ALocoController::Regulator_Implementation(int passedTorque)
-{
-	throttleOn = false;
-	ApplyTorque(passedTorque);
-}
-
-void ALocoController::SetReverser_Implementation(int passedDetent)
-{
-		if (passedDetent == 0)
-		{
-			canMove = true;
-			isReversing = true;
-		}
-		else if (passedDetent == 2) 
-		{
-			canMove = true;
-			isReversing = false;
-		}
-		else if (passedDetent == 1) 
-		{
-			canMove = false;
-		}
-}
-
 //Lever Movement
 void ALocoController::setRegStage(int passedDetent)
 {
-	RegulatorComponent->engageRegulator(passedDetent);
+	ApplyTorque(passedDetent * 25);
 	if (passedDetent == 0)
 	{
 		ToggleStaticSteam();
@@ -348,12 +290,27 @@ void ALocoController::setRegStage(int passedDetent)
 
 void ALocoController::setReverserStage(int passedDetent)
 {
-	ReverserComponent->setReverser(passedDetent);
+	switch (passedDetent)
+	{
+	case 0:
+		canMove = true;
+		isReversing = true;
+		break;
+	case 1:
+		canMove = false;
+		break;
+	case 2:
+		canMove = true;
+		isReversing = false;
+		break;
+	default:
+		break;
+	}
 }
 
 void ALocoController::setBrakeStage(int passedDetent)
 {
-	BrakeLeverComponent->engageBrakeStage(passedDetent);
+	ApplyBrakes(passedDetent * 25);
 }
 
 //Fuel Functions

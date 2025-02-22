@@ -25,23 +25,16 @@ class AStationClass;
 class ALocoDrivers;
 
 UCLASS()
-class LITTLERAILWAYS_API ALocoController : public APawn, public IBPI_Braking, public IBPI_Fueling
+class LITTLERAILWAYS_API ALocoController : public APawn, public IBPI_Fueling
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
 	ALocoController();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
+	//Functions
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void CameraDrag(const FInputActionValue& Value);
@@ -54,7 +47,50 @@ public:
 
 	void ToggleHUD(const FInputActionValue& Value);
 
-public:
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "InteractEventRef")
+	void AddFuel(float passedFuelToAdd, bool isWater); void AddFuel_Implementation(float passedFuelToAdd, bool isWater) override;
+
+	UFUNCTION(BlueprintCallable, Category = "Loco")
+	void Possessed();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "SteamControl")
+	void ToggleMovementSteam();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "SteamControl")
+	void ToggleStaticSteam();
+
+	//Movement Variables
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	float TractiveTorque;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	float MaxSpeedKph;
+
+	//Station Variables
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
+	AStationClass* StationRef;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
+	bool isUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MovementData")
+	bool throttleOn;
+
+	//Child Actor Ref Components
+	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
+	ALocomotiveTender* TrainTenderComponent;
+
+	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
+	ALocoDrivers* DriverSet1Component;
+
+	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
+	ALocoDrivers* DriverSet2Component;
+
+	UPROPERTY(EditDefaultsOnly, Category = "ActorSpawn")
+	TSubclassOf<ACharacter> CharacterToSpawn;
+
+private:
+
 	UPROPERTY(EditAnywhere)
 	USpringArmComponent* CameraArm;
 
@@ -64,15 +100,6 @@ public:
 	//Loco Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* LocoBody;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
-	UChildActorComponent* BrakeMesh;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
-	UChildActorComponent* RegulatorMesh;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
-	UChildActorComponent* ReverserMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* TenderMesh;
@@ -89,36 +116,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* Coupling2;
 
-	/** Lever Components */
-	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
-	AReverser* ReverserComponent;
-
-	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
-	ARegulator* RegulatorComponent;
-
-	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
-	ABrakeLever* BrakeLeverComponent;
-
-	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
-	ALocomotiveTender* TrainTenderComponent;
-
-	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
-	ALocoDrivers* DriverSet1Component;
-
-	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
-	ALocoDrivers* DriverSet2Component;
-
-	UPROPERTY(EditDefaultsOnly, Category = "ActorSpawn")
-	TSubclassOf<ACharacter> CharacterToSpawn;
-
 	//Variables
-
-	//Station Variables
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
-	AStationClass* StationRef;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
-	bool isUp;
 	//Fuel variables
 	float curFuelLevel = 0;
 
@@ -128,19 +126,9 @@ public:
 
 	//Movement Bools
 	bool canMove;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MovementData")
-	bool throttleOn;
 	bool isReversing;
 	bool isPressed = false;
 	bool hudVisible = true;
-
-	//Movement Variables
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
-	float TractiveTorque;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
-	float MaxSpeedKph;
 
 	int passedTorqueMulti;
 
@@ -153,26 +141,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Loco")
 	void ApplyTorque(int passedTorqueMultiplier);
 
-	UFUNCTION(BlueprintCallable, Category = "Loco")
-	void Possessed();
-
 	void ApplyBrakes(int passedBrakeVal);
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControlsRef")
-	void Brake(int passedForce); void Brake_Implementation(int passedForce) override;
-
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControlsRef")
-	void Regulator(int passedTorque); void Regulator_Implementation(int passedTorque) override;
-
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "LocoControlsRef")
-	void SetReverser(int passedDetent); void SetReverser_Implementation(int passedDetent) override;
-
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "InteractEventRef")
-	void AddFuel(float passedFuelToAdd, bool isWater); void AddFuel_Implementation(float passedFuelToAdd, bool isWater) override;
-
 	void SetComponents();
-
-	void MoveCam();
 
 	void SpawnCharacter();
 
@@ -190,12 +161,6 @@ public:
 
 	void togglePassengerButtons(bool isUP, AStationClass* stationRef);
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "SteamControl")
-	void ToggleMovementSteam();
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "SteamControl")
-	void ToggleStaticSteam();
-
 	FTimerHandle MemberTimerHandle;
 
 	/** Returns CameraBoom subobject **/
@@ -204,6 +169,8 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return Camera; }
 
 protected:
+	virtual void BeginPlay() override;
+
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input")
 	UInputMappingContext* TrainControlsMappingContext;
@@ -246,5 +213,4 @@ protected:
 	float ZoomStep = 10.0f;
 
 	APlayerController* PC;
-
 };
