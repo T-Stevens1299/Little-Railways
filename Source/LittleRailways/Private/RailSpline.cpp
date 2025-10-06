@@ -41,11 +41,13 @@ void ARailSpline::BeginPlay()
 
 void ARailSpline::AddMeshToSpline()
 {
-	//m_SplineMeshComponent = AddSplineMeshComponent();
-	//m_SplineMeshComponent->SetStaticMesh(m_SplineMesh);
-	//m_SplineMeshComponent->SetForwardAxis(ESplineMeshAxis::X, true);
-	//m_SplineMeshComponent->SetStartAndEnd(GetStartPos(loopIndex), GetStartTangent(loopIndex), GetEndPos(loopIndex), GetEndTangent(loopIndex), true);
-	//m_SplineMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	if (m_SplineMeshComponent != NULL)
+	{
+		m_SplineMeshComponent->SetStaticMesh(m_SplineMesh);
+		m_SplineMeshComponent->SetForwardAxis(ESplineMeshAxis::X, true);
+		m_SplineMeshComponent->SetStartAndEnd(GetStartPos(loopIndex), GetStartTangent(loopIndex), GetEndPos(loopIndex), GetEndTangent(loopIndex), true);
+		m_SplineMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	}
 }
 
 FVector ARailSpline::GetStartPos(int index)
