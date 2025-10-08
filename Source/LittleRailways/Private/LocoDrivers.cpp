@@ -86,7 +86,8 @@ void ALocoDrivers::ApplyTorque(int passedTorqueMultiplier)
 			break;
 		}
 
-		wheelsToDrive[i]->AddTorqueInRadians(FVector(0.0f, (passedTorqueMultiplier * TractiveTorque), 0.0f));
+		float torqueToAdd = passedTorqueMultiplier * TractiveTorque;
+		wheelsToDrive[i]->AddTorqueInRadians(FVector(torqueToAdd, torqueToAdd, 0.0f));
 	}
 }
 
