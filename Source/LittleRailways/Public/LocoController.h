@@ -23,6 +23,9 @@ class ABrakeLever;
 class ALocomotiveTender;
 class AStationClass;
 class ALocoDrivers;
+class USoundAndSteamComponent;
+class UNiagaraComponent;
+class UAudioComponent;
 
 UCLASS()
 class LITTLERAILWAYS_API ALocoController : public APawn, public IBPI_Fueling
@@ -116,6 +119,18 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
 	UChildActorComponent* Coupling2;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	USoundAndSteamComponent* SoundSteamComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UNiagaraComponent* SteamGenerator;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UAudioComponent* LocoChuffGen1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LocoParts", meta = (AllowPrivateAccess = "true"))
+	UAudioComponent* LocoChuffGen2;
+
 	//Variables
 	//Fuel variables
 	float curFuelLevel = 0;
@@ -157,6 +172,8 @@ public:
 
 	void SetUILevels();
 
+	void BlowWhistle();
+
 	void consumeFuelandWater();
 
 	void togglePassengerButtons(bool isUP, AStationClass* stationRef);
@@ -191,6 +208,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input")
 	UInputAction* HideHUD;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enhanced Input")
+	UInputAction* TriggerWhistle;
 
 	/** HUD Widget */
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")

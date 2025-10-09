@@ -14,7 +14,11 @@
 #include "LocomotiveTender.h"
 #include "LocoDrivers.h"
 #include "StationClass.h"
+#include "SoundAndSteamComponent.h"
 #include "GameFramework/Controller.h"
+#include "Components/AudioComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include <Kismet/GameplayStatics.h>
 #include "LittleRailways/LittleRailwaysCharacter.h"
 #include "GameFramework/PlayerController.h"
@@ -47,6 +51,15 @@ ALocoController::ALocoController()
 	TenderMesh = CreateDefaultSubobject<UChildActorComponent>(TEXT("TenderComponent"));
 	TenderMesh->SetupAttachment(LocoBody);
 
+	SteamGenerator = CreateDefaultSubobject<UNiagaraComponent>(TEXT("SteamGenComponent"));
+	SteamGenerator->SetupAttachment(LocoBody);
+
+	LocoChuffGen1 = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp1"));
+	LocoChuffGen1->SetupAttachment(LocoBody);
+
+	LocoChuffGen2 = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp2"));
+	LocoChuffGen2->SetupAttachment(LocoBody);
+
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
 	CameraArm->SetupAttachment(LocoBody);
 	CameraArm->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f)); // Position the camera
@@ -56,6 +69,8 @@ ALocoController::ALocoController()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
 	Camera->bUsePawnControlRotation = false;
+
+	SoundSteamComp = CreateDefaultSubobject<USoundAndSteamComponent>(TEXT("SoundSteamComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -95,6 +110,8 @@ void ALocoController::SetComponents()
 	{
 		TrainTenderComponent->SetTrainPtr(this);
 	}
+
+	SoundSteamComp->setComponentVariables(this, DriverSet1Component, SteamGenerator, LocoChuffGen1, LocoChuffGen2);
 }
 
 void ALocoController::Possessed() 
@@ -179,6 +196,8 @@ void ALocoController::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 		EnhancedInputComponent->BindAction(DragTriggerAction, ETriggerEvent::Triggered, this, &ALocoController::DragTrigger);
 
 		EnhancedInputComponent->BindAction(HideHUD, ETriggerEvent::Triggered, this, &ALocoController::ToggleHUD);
+
+		EnhancedInputComponent->BindAction(TriggerWhistle, ETriggerEvent::Triggered, this, &ALocoController::BlowWhistle);
 	}
 }
 
@@ -322,6 +341,11 @@ void ALocoController::SetUILevels()
 	HUD->UpdateFireLevel(0.0f);
 	HUD->UpdateWaterLevel(TrainTenderComponent->waterCapacity);
 	HUD->UpdateCoalLevel(TrainTenderComponent->fuelCapacity);
+}
+
+void ALocoController::BlowWhistle()
+{
+	SoundSteamComp->playWhistle();
 }
 
 void ALocoController::togglePassengerButtons(bool isUP, AStationClass* stationRef)

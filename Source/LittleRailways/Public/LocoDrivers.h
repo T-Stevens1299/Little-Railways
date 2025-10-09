@@ -77,6 +77,8 @@ public:
 
 	void ApplyBreaks(int passedBrakeVal);
 
+	float GetWheelRotation() { return LeftWheel1->GetRelativeRotation().Roll; };
+
 	//References
 	class ALocoController* TrainRef;
 
