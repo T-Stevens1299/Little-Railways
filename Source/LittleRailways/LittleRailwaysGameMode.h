@@ -36,10 +36,13 @@ public:
 
 	int GetCurLevel() { return currentLevel; }
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProgressionData")
 	int currentXP;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProgressionData")
 	int currentMoney = 2500;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProgressionData")
 	int currentLevel = 1;
 
 	bool HUDon = false;

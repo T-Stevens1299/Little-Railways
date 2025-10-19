@@ -57,11 +57,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fuel")
 	float waterCapacity;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fuel")
 	float curWaterAmount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fuel")
 	float fuelCapacity;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fuel")
 	float curFuelAmount;
 
 	//Loco Ref
