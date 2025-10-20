@@ -48,6 +48,9 @@ public:
 	UChildActorComponent* Coupling2;
 
 	//Variables
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Class Type")
+	int typeID;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PassengerData")
 	int passengerCapacity;
 

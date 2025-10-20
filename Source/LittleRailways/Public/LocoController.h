@@ -79,6 +79,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MovementData")
 	bool throttleOn;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Class Type")
+	int typeID;
+
 	//Child Actor Ref Components
 	UPROPERTY(BlueprintReadOnly, Category = "LocoParts")
 	ALocomotiveTender* TrainTenderComponent;
@@ -93,7 +96,6 @@ public:
 	TSubclassOf<ACharacter> CharacterToSpawn;
 
 private:
-
 	UPROPERTY(EditAnywhere)
 	USpringArmComponent* CameraArm;
 

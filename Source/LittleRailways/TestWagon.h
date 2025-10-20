@@ -55,6 +55,9 @@ public:
 
 public:
 	//Variables
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Class Type")
+	int typeID;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LoadAmount")
 	int currentLoad;
 
