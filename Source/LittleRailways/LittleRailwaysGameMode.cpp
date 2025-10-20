@@ -84,7 +84,12 @@ void ALittleRailwaysGameMode::ToggleHUD()
 	}
 	else
 	{
+		//Reset HUD values and add to viewport
 		HUD->AddToViewport();
+		HUD->changeMoneyAmount(currentMoney);
+		HUD->changeXPAmount(currentXP);
+		HUD->changeLevel(currentLevel);
+		calculatePercentage();
 		HUDon = true;
 	}
 }
